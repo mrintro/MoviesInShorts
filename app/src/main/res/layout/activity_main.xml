@@ -6,13 +6,117 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="10dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="20dp">
+        <EditText
+            android:id="@+id/search_field"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_layout"
+            android:ems="10"
+            android:hint="@string/search_hint"
+            android:inputType="textPersonName"
+            android:layout_marginHorizontal="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="#999999"
+            android:textSize="16sp"/>
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_marginEnd="10dp"
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:srcCompat="@drawable/ic_search"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="28dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/search_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent">
+
+        <FrameLayout
+            android:id="@+id/background_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@mipmap/backgrounddummy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,2:3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/main_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginHorizontal="80dp"
+            android:background="@mipmap/maskgroup"
+            app:layout_constraintDimensionRatio="H,3:4"
+            app:layout_constraintBottom_toTopOf="@+id/movie_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/movie_title"
+            style="@style/pushpa_the_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_dummy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_image" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/background_image"
+            app:layout_constraintTop_toBottomOf="@+id/background_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/imdb_layout"
+            android:paddingHorizontal="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="20dp">
+            <ImageButton
+                android:id="@+id/imdb"
+                android:layout_marginEnd="10dp"
+                android:paddingTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                app:srcCompat="@mipmap/imdb"/>
+            <TextView
+                android:paddingTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/imdb_text_style"
+                android:text="@string/imdb_dummy"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

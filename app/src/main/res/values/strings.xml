@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MoviesInShorts</string>
+    <string name="search_hint">Search</string>
+
+    <string name="title_dummy">Pushpa: The Rise - Part 1</string>
+    <string name="imdb_dummy">8.1</string>
+
 </resources>
