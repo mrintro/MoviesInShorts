@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".movieFragment.MovieFragment"
+    tools:context=".fragments.MovieFragment"
     >
 
     <!-- TODO: Update blank fragment layout -->
@@ -75,7 +75,6 @@
             style="@style/pushpa_the_"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_dummy"
             android:maxLines="1"
             android:gravity="center"
             android:ellipsize="end"
@@ -104,6 +103,7 @@
                 android:background="@color/transparent"
                 app:srcCompat="@mipmap/imdb"/>
             <TextView
+                android:id="@+id/imdb_text"
                 android:paddingTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

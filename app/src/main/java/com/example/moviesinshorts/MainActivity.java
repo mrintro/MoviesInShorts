@@ -6,13 +6,15 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.moviesinshorts.databinding.ActivityMainBinding;
-import com.example.moviesinshorts.databinding.ActivityMainBindingImpl;
-import com.example.moviesinshorts.movieFragment.MovieFragment;
+import com.example.moviesinshorts.fragments.MovieDetailFragment;
+import com.example.moviesinshorts.fragments.MovieFragment;
 import com.example.moviesinshorts.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
@@ -49,24 +51,41 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpButtons(FragmentManager fragmentManager) {
         binding.trendingButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
                 if(!currentFragement.equals(Constants.TRENDING_FRAGMENT)) {
+                    binding.nowPlayingButton.setTextColor(R.color.colorTextHintDefault);
+                    binding.nowPlayingButton.setText(R.string.active_now_playing);
+                    binding.trendingButton.setTextColor(R.color.black);
+                    binding.trendingButton.setText(R.string.trending);
                     trendingInstance.changeMovieFragment(fragmentManager, trendingInstance);
                     currentFragement = Constants.TRENDING_FRAGMENT;
                 }
             }
         });
         binding.nowPlayingButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
                 if(!currentFragement.equals(Constants.NOW_PLAYING_FRAGMENT)) {
+                    binding.trendingButton.setTextColor(R.color.colorTextHintDefault);
+                    binding.trendingButton.setText(R.string.active_trending);
+                    binding.nowPlayingButton.setTextColor(R.color.black);
+                    binding.nowPlayingButton.setText(R.string.now_playing);
                     trendingInstance.changeMovieFragment(fragmentManager, nowPlayingInstance);
                     currentFragement = Constants.NOW_PLAYING_FRAGMENT;
                 }
             }
+
+
         });
 
+    }
+    @SuppressLint("ResourceAsColor")
+    private void changeToDisactive(Button trendingButton) {
+        trendingButton.setTextColor(R.color.colorTextHintDefault);
+        trendingButton.setText(R.string.active_trending);
     }
 
     private void initMovieFragment(FragmentManager fragmentManager, MovieFragment movieFragment) {
@@ -75,5 +94,14 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransactaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransactaction.commit();
         currentFragement=movieFragment.getFragmentName();
+    }
+
+    public void changeToDetailFragment(MovieDetailFragment movieDetailFragment) {
+        Log.d("Checking Nav", "got here");
+        binding.movieDetailFragment.setVisibility(View.INVISIBLE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.movie_fragment, movieDetailFragment, "Movie Detail Page").addToBackStack("DetailsPage");
+        fragmentTransaction.commit();
     }
 }

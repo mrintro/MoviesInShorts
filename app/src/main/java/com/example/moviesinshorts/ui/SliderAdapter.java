@@ -1,17 +1,25 @@
 package com.example.moviesinshorts.ui;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
+import com.example.moviesinshorts.databinding.FragmentMovieBinding;
+import com.example.moviesinshorts.fragments.MovieDetailFragment;
 import com.example.moviesinshorts.model.MovieModel;
+import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -19,7 +27,8 @@ import java.util.List;
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder> {
 
     private List<MovieModel> movieModels;
-    private ViewPager2 viewPager2;
+    private final ViewPager2 viewPager2;
+    private final OnMovieOnClick onMovieOnClick;
 
     public MovieModel getMovieModel(int position){
         if(movieModels.size()<position) return null;
@@ -31,8 +40,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         notifyDataSetChanged();
     }
 
-    public SliderAdapter(ViewPager2 viewPager2) {
+    public SliderAdapter(ViewPager2 viewPager2, OnMovieOnClick onMovieOnClick) {
         this.viewPager2 = viewPager2;
+        this.onMovieOnClick = onMovieOnClick;
     }
 
 
@@ -49,13 +59,23 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-
-
+    public void onBindViewHolder(@NonNull SliderViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         Glide.with(holder.itemView.getContext())
                 .load("https://image.tmdb.org/t/p/w500/"+movieModels.get(position).getPoster_path())
                 .into((holder).imageView);
+
+//        holder.imageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
+//                binding.mainContainer.setVisibility(View.GONE);
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(binding.mainContainer.getId(), movieDetailFragment);
+//                fragmentTransaction.addToBackStack("DetailsTransaction");
+//                fragmentTransaction.commit();
+//            }
+//        });
 
     }
 
@@ -66,12 +86,22 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         } return 0;
     }
 
-    class SliderViewHolder extends RecyclerView.ViewHolder {
+    public MovieModel getMovieAtPosition(int position) {
+        return movieModels.get(position);
+    }
+
+    class SliderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public RoundedImageView imageView;
 
         public SliderViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageSlide);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onMovieOnClick.onMovieOnClick(v,getBindingAdapterPosition());
         }
     }
 

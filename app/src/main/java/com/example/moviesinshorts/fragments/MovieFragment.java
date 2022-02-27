@@ -1,6 +1,5 @@
-package com.example.moviesinshorts.movieFragment;
+package com.example.moviesinshorts.fragments;
 
-import android.graphics.Movie;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.example.moviesinshorts.MainActivity;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentMovieBinding;
 import com.example.moviesinshorts.model.MovieModel;
@@ -29,10 +29,12 @@ import com.example.moviesinshorts.network.RetroInstance;
 import com.example.moviesinshorts.response.MovieListResponse;
 import com.example.moviesinshorts.ui.SliderAdapter;
 import com.example.moviesinshorts.utils.Constants;
+import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,7 +43,7 @@ import retrofit2.Response;
 public class MovieFragment extends Fragment {
 
     private FragmentMovieBinding fragmentMovieBinding;
-
+    private OnMovieOnClick onMovieOnClick;
     private MovieListViewModel viewModel;
     private ViewPager2 viewPager2;
     private SliderAdapter sliderAdapter;
@@ -71,7 +73,6 @@ public class MovieFragment extends Fragment {
         View movieFragmentView = fragmentMovieBinding.getRoot();
 
         setViewPagerAdapter();
-//        setUpButtons();
 
         viewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
         viewModel.getMovies(this.fragmentName).observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
@@ -88,21 +89,28 @@ public class MovieFragment extends Fragment {
 
 
 
-
-//    private void setUpButtons() {
-//
-//        fragmentMovieBinding.trendingButton.setOnContextClickListener(new View.OnContextClickListener() {
-//            @Override
-//            public boolean onContextClick(View v) {
-//                return false;
-//            }
-//        });
-//
-//    }
-
     private void setViewPagerAdapter() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+        onMovieOnClick = new OnMovieOnClick() {
+            @Override
+            public void onMovieOnClick(View view, int position) {
+
+                MovieDetailFragment movieDetailFragment = new MovieDetailFragment(sliderAdapter.getMovieAtPosition(position));
+                ((MainActivity)getActivity()).changeToDetailFragment(movieDetailFragment);
+
+
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(getActivity()., movieDetailFragment);
+//                fragmentTransaction.addToBackStack("DetailsTransaction");
+//                fragmentTransaction.commit();
+
+                Log.d("Listener check", "listening to "+ String.valueOf(position));
+            }
+        };
+
         viewPager2 = fragmentMovieBinding.viewPagerSlider;
-        sliderAdapter = new SliderAdapter(viewPager2);
+        sliderAdapter = new SliderAdapter(viewPager2, onMovieOnClick);
 
         viewPager2.setAdapter(sliderAdapter);
 
@@ -131,9 +139,10 @@ public class MovieFragment extends Fragment {
                 MovieModel movie = sliderAdapter.getMovieModel(position);
                 fragmentMovieBinding.movieTitle.setText(movie.getTitle());
 
-                Glide.with(getContext())
+                Glide.with(requireContext())
                         .load("https://image.tmdb.org/t/p/w500/"+movie.getBackdrop_path())
                         .into(fragmentMovieBinding.backgroundImage);
+                fragmentMovieBinding.imdbText.setText(String.valueOf(movie.getVote_average()));
 
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
@@ -200,4 +209,17 @@ public class MovieFragment extends Fragment {
             fragmentTransaction.commit();
         }
     }
+
+//    @Override
+//    public void onMovieOnClick(int position) {
+//        Log.d("Slider", "Selected");
+//
+////        MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
+////        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+////        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+////        fragmentTransaction.replace(fragmentMovieBinding.mainContainer.getId(), movieDetailFragment);
+////        fragmentTransaction.addToBackStack("DetailsTransaction");
+////        fragmentTransaction.commit();
+//
+//    }
 }
