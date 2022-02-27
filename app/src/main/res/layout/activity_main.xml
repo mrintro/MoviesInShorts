@@ -35,11 +35,10 @@
                 android:textSize="16sp"/>
             <ImageButton
                 android:id="@+id/search_button"
-                android:layout_marginEnd="10dp"
                 android:paddingTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/transparent"
                 app:srcCompat="@drawable/ic_search"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -51,10 +50,40 @@
             app:layout_constraintTop_toBottomOf="@+id/search_container"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="parent">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:justifyContent="space_around"
+                >
+                <Button
+                    android:id="@+id/trending_button"
+                    style="@style/active_button_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/active_trending"
+                    app:layout_alignSelf="center"
+                    android:background="@color/transparent"
+                    />
+                <Button
+                    android:id="@+id/now_playing_button"
+                    style="@style/inactive_button_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/now_playing"
+                    android:background="@color/transparent"
+                    />
+            </com.google.android.flexbox.FlexboxLayout>
                 <FrameLayout
                     android:id="@+id/movie_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

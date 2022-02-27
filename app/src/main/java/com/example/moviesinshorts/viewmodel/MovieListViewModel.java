@@ -25,7 +25,9 @@ public class MovieListViewModel extends ViewModel {
         movieListRepository = MovieListRepository.getMovieListRepositoryInstance();
     }
 
-    public LiveData<List<MovieModel>> getMovies(){ return movieListRepository.getMovies(); }
+    public LiveData<List<MovieModel>> getMovies(String fragmentName){
+        return movieListRepository.getMovies(fragmentName);
+    }
 
     public void makeNowTrendingApiCall() {
 

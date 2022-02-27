@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,11 +24,11 @@ import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentMovieBinding;
 import com.example.moviesinshorts.model.MovieModel;
-import com.example.moviesinshorts.model.NowPlayingMovieResponse;
 import com.example.moviesinshorts.network.NowPlayingApi;
 import com.example.moviesinshorts.network.RetroInstance;
 import com.example.moviesinshorts.response.MovieListResponse;
 import com.example.moviesinshorts.ui.SliderAdapter;
+import com.example.moviesinshorts.utils.Constants;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
 
 import java.util.ArrayList;
@@ -40,21 +42,24 @@ public class MovieFragment extends Fragment {
 
     private FragmentMovieBinding fragmentMovieBinding;
 
-    private NowPlayingMovieResponse movieList;
     private MovieListViewModel viewModel;
     private ViewPager2 viewPager2;
     private SliderAdapter sliderAdapter;
+    private String currentFragment;
+    private String fragmentName;
 
-    public MovieFragment() {
+    public String getFragmentName() {
+        return fragmentName;
+    }
+
+    public MovieFragment(String fragmentName) {
         // Required empty public constructor
+        this.fragmentName = fragmentName;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
     }
 
     @Override
@@ -66,19 +71,34 @@ public class MovieFragment extends Fragment {
         View movieFragmentView = fragmentMovieBinding.getRoot();
 
         setViewPagerAdapter();
-        getRetrofitResponse();
+//        setUpButtons();
 
         viewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
-        viewModel.getMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
+        viewModel.getMovies(this.fragmentName).observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
+
             @Override
             public void onChanged(List<MovieModel> movieModels) {
-                Log.d("Api Response Movie Fragment",movieModels.toString());
                 sliderAdapter.setMovieModels(movieModels);
             }
         });
 
         return movieFragmentView;
     }
+
+
+
+
+
+//    private void setUpButtons() {
+//
+//        fragmentMovieBinding.trendingButton.setOnContextClickListener(new View.OnContextClickListener() {
+//            @Override
+//            public boolean onContextClick(View v) {
+//                return false;
+//            }
+//        });
+//
+//    }
 
     private void setViewPagerAdapter() {
         viewPager2 = fragmentMovieBinding.viewPagerSlider;
@@ -93,7 +113,7 @@ public class MovieFragment extends Fragment {
 
 
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-//        compositePageTransformer.addTransformer(new MarginPageTransformer(60));
+        compositePageTransformer.addTransformer(new MarginPageTransformer(60));
         compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
             @Override
             public void transformPage(@NonNull View page, float position) {
@@ -164,4 +184,20 @@ public class MovieFragment extends Fragment {
 
     }
 
+    public void changeMovieFragment(FragmentManager fragmentManager, MovieFragment nextMovieFragment) {
+
+        if(nextMovieFragment.getFragmentName().equals(Constants.TRENDING_FRAGMENT)){
+            fragmentManager.popBackStack();
+            nextMovieFragment.fragmentMovieBinding.mainContainer.setVisibility(View.VISIBLE);
+        }
+        else {
+            Log.d("transaction", "should be happening" + nextMovieFragment.getFragmentName());
+            fragmentMovieBinding.mainContainer.setVisibility(View.INVISIBLE);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(fragmentMovieBinding.mainContainer.getId(), nextMovieFragment);
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.addToBackStack(Constants.NOW_PLAYING_FRAGMENT);
+            fragmentTransaction.commit();
+        }
+    }
 }

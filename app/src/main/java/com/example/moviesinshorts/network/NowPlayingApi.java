@@ -3,7 +3,6 @@ package com.example.moviesinshorts.network;
 import androidx.annotation.NonNull;
 
 import com.example.moviesinshorts.model.MovieModel;
-import com.example.moviesinshorts.model.NowPlayingMovieResponse;
 import com.example.moviesinshorts.response.MovieListResponse;
 
 import java.util.List;

@@ -25,8 +25,9 @@
         <item name="android:textSize">
             26sp
         </item>
+        <item name="font">@font/tt_commons_black</item>
         <item name="android:letterSpacing">
-            0.03
+            0.02
         </item>
         <item name="android:textColor">
             #000000
@@ -40,6 +41,16 @@
         <item name="android:textColor">
             #FFFFFF
         </item>
+    </style>
+
+    <style name="active_button_style">
+        <item name="font">@font/tt_commons_regular</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="inactive_button_style">
+        <item name="font">@font/tt_commons_regular</item>
+        <item name="android:textColor">@color/colorTextHintDefault</item>
     </style>
 
     <style name="imdb_container_style">

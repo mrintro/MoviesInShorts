@@ -2,7 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".movieFragment.MovieFragment">
+    tools:context=".movieFragment.MovieFragment"
+    >
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,12 +18,43 @@
             android:id="@+id/background_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:alpha="0.3"
+            android:scaleType="centerCrop"
+            app:riv_corner_radius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,2:3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
+
+<!--        <com.google.android.flexbox.FlexboxLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:justifyContent="space_around"-->
+<!--        >-->
+<!--            <Button-->
+<!--                android:id="@+id/trending_button"-->
+<!--                style="@style/active_button_style"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/active_trending"-->
+<!--                app:layout_alignSelf="center"-->
+<!--                android:background="@color/transparent"-->
+<!--                />-->
+<!--            <Button-->
+<!--                android:id="@+id/now_playing_button"-->
+<!--                style="@style/inactive_button_style"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/now_playing"-->
+<!--                android:background="@color/transparent"-->
+<!--                />-->
+<!--        </com.google.android.flexbox.FlexboxLayout>-->
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerSlider"
@@ -30,7 +62,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="40dp"
             android:paddingHorizontal="80dp"
-            app:layout_constraintDimensionRatio="H,3:2"
+            app:layout_constraintDimensionRatio="H,4:3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/background_image"
@@ -44,6 +76,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_dummy"
+            android:maxLines="1"
+            android:gravity="center"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
