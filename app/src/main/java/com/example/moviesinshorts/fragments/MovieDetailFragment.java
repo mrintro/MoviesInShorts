@@ -1,5 +1,6 @@
 package com.example.moviesinshorts.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,8 @@ import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentMovieDetailBinding;
 import com.example.moviesinshorts.model.MovieModel;
+
+import jp.wasabeef.blurry.Blurry;
 
 public class MovieDetailFragment extends Fragment {
 
@@ -34,6 +37,7 @@ public class MovieDetailFragment extends Fragment {
 
         Log.d("OncreateView","Called");
 
+
         fragmentMovieDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_detail, container, false);
         View view = fragmentMovieDetailBinding.getRoot();
 
@@ -43,10 +47,20 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void setData() {
+//        Blurry.with(requireContext())
+//                .radius(50)
+//                .sampling(10)
+//                .color(Color.argb(80, 255, 255, 0))
+//                .async()
+//                .onto(fragmentMovieDetailBinding.titleContainer);
+
+        fragmentMovieDetailBinding.title.setText(movie.getTitle());
+        fragmentMovieDetailBinding.language.setText(movie.getOriginal_language());
+        fragmentMovieDetailBinding.rating.setText("  |  "+ movie.getVote_average());
 
         fragmentMovieDetailBinding.mainContainer.setVisibility(View.VISIBLE);
         Glide.with(requireContext())
-                .load("https://image.tmdb.org/t/p/w500/"+movie.getBackdrop_path())
+                .load("https://image.tmdb.org/t/p/w500/"+movie.getPoster_path())
                 .into(fragmentMovieDetailBinding.detailImage);
     }
 }

@@ -21,6 +21,13 @@
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
+    <style name="other_data">
+        <item name="android:paddingLeft">4sp</item>
+        <item name="font">@font/tt_commons_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorTextDefault</item>
+    </style>
+
     <style name="pushpa_the_">
         <item name="android:textSize">
             26sp

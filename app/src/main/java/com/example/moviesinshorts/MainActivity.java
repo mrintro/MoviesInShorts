@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.example.moviesinshorts.databinding.ActivityMainBinding;
 import com.example.moviesinshorts.fragments.MovieDetailFragment;
 import com.example.moviesinshorts.fragments.MovieFragment;
+import com.example.moviesinshorts.fragments.SearchFragment;
 import com.example.moviesinshorts.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     @NotNull
     private MovieFragment trendingInstance;
     private String currentFragement;
+    private FragmentManager fragmentManager;
 
 
     @Override
@@ -34,12 +36,29 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        setUpButtons(fragmentManager);
+        fragmentManager = getSupportFragmentManager();
+        setUpCatogaryButtons(fragmentManager);
+        setUpSearchButton();
         initInstances();
         initMovieFragment(fragmentManager, trendingInstance);
 
 
+    }
+
+    private void setUpSearchButton() {
+        binding.searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.searchButton.setVisibility(View.INVISIBLE);
+                binding.movieDetailView.setVisibility(View.INVISIBLE);
+                binding.searchFragment.setVisibility(View.VISIBLE);
+                binding.searchField.setVisibility(View.VISIBLE);
+                SearchFragment searchFragment = new SearchFragment();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.search_fragment, searchFragment, "going to search fragment").addToBackStack("search from main");
+
+            }
+        });
     }
 
     private void initInstances() {
@@ -49,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(nowPlayingInstance.getFragmentName(),"checking");
     }
 
-    private void setUpButtons(FragmentManager fragmentManager) {
+    private void setUpCatogaryButtons(FragmentManager fragmentManager) {
         binding.trendingButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
@@ -98,10 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeToDetailFragment(MovieDetailFragment movieDetailFragment) {
         Log.d("Checking Nav", "got here");
-        binding.movieDetailFragment.setVisibility(View.INVISIBLE);
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        binding.movieDetailView.setVisibility(View.INVISIBLE);
+        binding.detailScroll.setVisibility(View.VISIBLE);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.movie_fragment, movieDetailFragment, "Movie Detail Page").addToBackStack("DetailsPage");
+        fragmentTransaction.replace(R.id.movie_detail_fragment, movieDetailFragment, "Movie Detail Page").addToBackStack("DetailsPage");
         fragmentTransaction.commit();
     }
 }
