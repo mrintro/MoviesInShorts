@@ -1,8 +1,11 @@
 package com.example.moviesinshorts.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class MovieModel {
+public class MovieModel implements Parcelable {
     private boolean adult;
     private String backdrop_path;
     private ArrayList<Integer> genre_ids;
@@ -35,6 +38,34 @@ public class MovieModel {
     private boolean video;
     private double vote_average;
     private int vote_count;
+
+    protected MovieModel(Parcel in) {
+        adult = in.readByte() != 0;
+        backdrop_path = in.readString();
+        id = in.readInt();
+        original_language = in.readString();
+        original_title = in.readString();
+        overview = in.readString();
+        popularity = in.readDouble();
+        poster_path = in.readString();
+        release_date = in.readString();
+        title = in.readString();
+        video = in.readByte() != 0;
+        vote_average = in.readDouble();
+        vote_count = in.readInt();
+    }
+
+    public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
+        @Override
+        public MovieModel createFromParcel(Parcel in) {
+            return new MovieModel(in);
+        }
+
+        @Override
+        public MovieModel[] newArray(int size) {
+            return new MovieModel[size];
+        }
+    };
 
     public boolean isAdult() {
         return adult;
@@ -148,4 +179,25 @@ public class MovieModel {
         this.vote_count = vote_count;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (adult ? 1 : 0));
+        dest.writeString(backdrop_path);
+        dest.writeInt(id);
+        dest.writeString(original_language);
+        dest.writeString(original_title);
+        dest.writeString(overview);
+        dest.writeDouble(popularity);
+        dest.writeString(poster_path);
+        dest.writeString(release_date);
+        dest.writeString(title);
+        dest.writeByte((byte) (video ? 1 : 0));
+        dest.writeDouble(vote_average);
+        dest.writeInt(vote_count);
+    }
 }
