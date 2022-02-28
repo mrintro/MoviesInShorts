@@ -41,40 +41,15 @@
                 app:srcCompat="@drawable/ic_search"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/search_text_container"
+        <FrameLayout
+            android:id="@+id/search_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp">
-                <EditText
-                    android:id="@+id/search_field"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/search_layout"
-                    android:ems="10"
-                    android:visibility="gone"
-                    android:hint="@string/search_hint"
-                    android:inputType="textPersonName"
-                    android:layout_marginHorizontal="20dp"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:paddingTop="10dp"
-                    android:textColor="#999999"
-                    android:textSize="16sp"/>
-<!--            <ImageButton-->
-<!--                android:id="@+id/search_button"-->
-<!--                android:paddingTop="10dp"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@color/transparent"-->
-<!--                app:srcCompat="@drawable/ic_search"/>-->
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_container"
@@ -85,16 +60,6 @@
             app:layout_constraintTop_toBottomOf="@+id/search_container"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="parent">
-
-            <FrameLayout
-                android:id="@+id/search_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                />
 
             <ScrollView
                 android:id="@+id/detailScroll"
@@ -145,7 +110,12 @@
                     />
             </com.google.android.flexbox.FlexboxLayout>
                 <FrameLayout
-                    android:id="@+id/movie_fragment"
+                    android:id="@+id/trending_movie_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <FrameLayout
+                    android:id="@+id/now_playing_movie_fragment"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </FrameLayout>

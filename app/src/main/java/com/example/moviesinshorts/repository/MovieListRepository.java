@@ -8,11 +8,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.network.NowPlayingApi;
 import com.example.moviesinshorts.network.RetroInstance;
+import com.example.moviesinshorts.network.SearchQueryApi;
 import com.example.moviesinshorts.network.TrendingApi;
 import com.example.moviesinshorts.response.MovieListResponse;
 import com.example.moviesinshorts.response.MovieResponse;
 import com.example.moviesinshorts.utils.ApiThreadExecutors;
 import com.example.moviesinshorts.utils.Constants;
+import com.example.moviesinshorts.utils.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +24,16 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Query;
 
 public class MovieListRepository {
 
     private static MovieListRepository movieListRepositoryInstance;
-    private MutableLiveData<List<MovieModel>> movieList;
+    private final MutableLiveData<List<MovieModel>> movieList;
+    private MutableLiveData<List<MovieModel>> searchedMovieList;
     private NowPlayingApi nowPlayingApi;
     private TrendingApi trendingApi;
+    private SearchQueryApi searchQueryApi;
 
     private NowPlayingApi getNowPlayingApi() {
         if(nowPlayingApi==null) nowPlayingApi= (NowPlayingApi) RetroInstance.buildApi(NowPlayingApi.class);
@@ -38,6 +43,10 @@ public class MovieListRepository {
         if(trendingApi==null) trendingApi = (TrendingApi) RetroInstance.buildApi(TrendingApi.class);
         return trendingApi;
     }
+    private SearchQueryApi getSearchQueryApi() {
+        if(searchQueryApi==null) searchQueryApi = (SearchQueryApi) RetroInstance.buildApi(SearchQueryApi.class);
+        return searchQueryApi;
+    }
 
     public static MovieListRepository getMovieListRepositoryInstance() {
         if(movieListRepositoryInstance==null)
@@ -46,6 +55,7 @@ public class MovieListRepository {
     }
 
     private MovieListRepository() {
+        searchedMovieList = new MutableLiveData<List<MovieModel>>();
         movieList = new MutableLiveData<List<MovieModel>>();
     }
 
@@ -97,5 +107,31 @@ public class MovieListRepository {
     }
 
 
+    public LiveData<List<MovieModel>> getSearchMovie(String searchText) {
+
+        Log.d("Search String",searchText);
+        Call<MovieListResponse> responseCall = getSearchQueryApi().getSearchedMovie(
+                searchText
+        );
+
+        responseCall.enqueue(new Callback<MovieListResponse>() {
+            @Override
+            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                if (response.code() == 200) {
+                    Log.d("Response", response.message().toString());
+                    searchedMovieList.postValue(response.body().getMovieList());
+                } else {
+                    Log.e("Response", String.valueOf(response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieListResponse> call, Throwable t) {
+                Log.e("Api Failed", t.toString());
+            }
+        });
+
+        return searchedMovieList;
+    }
 
 }

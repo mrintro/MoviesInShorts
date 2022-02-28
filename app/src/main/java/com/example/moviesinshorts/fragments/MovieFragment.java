@@ -90,7 +90,6 @@ public class MovieFragment extends Fragment {
 
 
     private void setViewPagerAdapter() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
         onMovieOnClick = new OnMovieOnClick() {
             @Override

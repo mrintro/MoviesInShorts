@@ -29,25 +29,12 @@ public class MovieListViewModel extends ViewModel {
         return movieListRepository.getMovies(fragmentName);
     }
 
+    public LiveData<List<MovieModel>> getSearchMovie(String searchText){
+        return movieListRepository.getSearchMovie(searchText);
+    }
+
     public void makeNowTrendingApiCall() {
 
-
-
-//        NowPlayingApi nowPlayingApi = RetroInstance.getRetroFitClient().create(NowPlayingApi.class);
-//        Call<List<MovieModel> nowPlayingApiCall = nowPlayingApi.getMovieList();
-//        nowPlayingApiCall.enqueue(new Callback<List<MovieModel>() {
-//            @Override
-//            public void onResponse(Call<List<MovieModel> call, Response<List<MovieModel> response) {
-//                Log.d("Movie", "Getting Response");
-//                nowPlayingLiveData.postValue(response.body());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<MovieModel> call, Throwable t) {
-//                nowPlayingLiveData.postValue(null);
-//                Log.d("Movie", "API Failed"+t.toString());
-//            }
-//        });
     }
 
 }

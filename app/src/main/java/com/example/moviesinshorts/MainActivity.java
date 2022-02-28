@@ -7,9 +7,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.example.moviesinshorts.databinding.ActivityMainBinding;
@@ -27,22 +33,70 @@ public class MainActivity extends AppCompatActivity {
     private MovieFragment nowPlayingInstance;
     @NotNull
     private MovieFragment trendingInstance;
+    @NotNull
+    private Handler handler;
+
     private String currentFragement;
     private FragmentManager fragmentManager;
 
+
+    private long lastEditTime;
+    private final long delay = 1000;
+
+    private final Runnable handleUserType = new Runnable() {
+        @Override
+        public void run() {
+            if(System.currentTimeMillis() > lastEditTime+delay-500){
+                Log.d("Checking click", "searching");
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
+        handler = new Handler();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
         setUpCatogaryButtons(fragmentManager);
         setUpSearchButton();
+//        binding.searchField.setOnFocusChangeListener(this);
         initInstances();
         initMovieFragment(fragmentManager, trendingInstance);
+//        initTextChangeListener();
+
+    }
+
+//    private void initTextChangeListener() {
+//        binding.searchField.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                handler.removeCallbacks(handleUserType);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if(s.length() > 0){
+//                    lastEditTime = System.currentTimeMillis();
+//                    handler.postDelayed(handleUserType, delay);
+//                }
+//            }
+//        });
+//    }
 
 
+    @Override
+    public void onBackPressed() {
+        binding.movieDetailView.setVisibility(View.VISIBLE);
+        binding.searchFragment.setVisibility(View.INVISIBLE);
+        binding.searchButton.setVisibility(View.VISIBLE);
+        fragmentManager.popBackStack();
     }
 
     private void setUpSearchButton() {
@@ -52,14 +106,16 @@ public class MainActivity extends AppCompatActivity {
                 binding.searchButton.setVisibility(View.INVISIBLE);
                 binding.movieDetailView.setVisibility(View.INVISIBLE);
                 binding.searchFragment.setVisibility(View.VISIBLE);
-                binding.searchField.setVisibility(View.VISIBLE);
+//                binding.searchField.setVisibility(View.VISIBLE);
                 SearchFragment searchFragment = new SearchFragment();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.search_fragment, searchFragment, "going to search fragment").addToBackStack("search from main");
+                fragmentTransaction.commit();
 
             }
         });
     }
+
 
     private void initInstances() {
         nowPlayingInstance = new MovieFragment(Constants.NOW_PLAYING_FRAGMENT);
@@ -78,7 +134,10 @@ public class MainActivity extends AppCompatActivity {
                     binding.nowPlayingButton.setText(R.string.active_now_playing);
                     binding.trendingButton.setTextColor(R.color.black);
                     binding.trendingButton.setText(R.string.trending);
-                    trendingInstance.changeMovieFragment(fragmentManager, trendingInstance);
+                    binding.nowPlayingMovieFragment.setVisibility(View.INVISIBLE);
+                    binding.trendingMovieFragment.setVisibility(View.VISIBLE);
+
+//                    trendingInstance.changeMovieFragment(fragmentManager, trendingInstance);
                     currentFragement = Constants.TRENDING_FRAGMENT;
                 }
             }
@@ -92,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
                     binding.trendingButton.setText(R.string.active_trending);
                     binding.nowPlayingButton.setTextColor(R.color.black);
                     binding.nowPlayingButton.setText(R.string.now_playing);
-                    trendingInstance.changeMovieFragment(fragmentManager, nowPlayingInstance);
+                    binding.trendingMovieFragment.setVisibility(View.INVISIBLE);
+                    binding.nowPlayingMovieFragment.setVisibility(View.VISIBLE);
+//                    trendingInstance.changeMovieFragment(fragmentManager, nowPlayingInstance);
                     currentFragement = Constants.NOW_PLAYING_FRAGMENT;
                 }
             }
@@ -107,9 +168,12 @@ public class MainActivity extends AppCompatActivity {
         trendingButton.setText(R.string.active_trending);
     }
 
+
+    //Change this to visible fragment change scenerio
     private void initMovieFragment(FragmentManager fragmentManager, MovieFragment movieFragment) {
         FragmentTransaction fragmentTransactaction = fragmentManager.beginTransaction();
-        fragmentTransactaction.replace(R.id.movie_fragment, movieFragment,movieFragment.getFragmentName());
+        fragmentTransactaction.replace(R.id.trending_movie_fragment, movieFragment,movieFragment.getFragmentName());
+        fragmentTransactaction.replace(R.id.now_playing_movie_fragment, nowPlayingInstance, nowPlayingInstance.getFragmentName());
         fragmentTransactaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransactaction.commit();
         currentFragement=movieFragment.getFragmentName();
@@ -120,7 +184,20 @@ public class MainActivity extends AppCompatActivity {
         binding.movieDetailView.setVisibility(View.INVISIBLE);
         binding.detailScroll.setVisibility(View.VISIBLE);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.movie_detail_fragment, movieDetailFragment, "Movie Detail Page").addToBackStack("DetailsPage");
+        fragmentTransaction.replace(R.id.movie_detail_fragment, movieDetailFragment, "Movie Detail Page");
+        fragmentTransaction.addToBackStack("DetailsPage");
         fragmentTransaction.commit();
     }
+//
+//    @Override
+//    public void onFocusChange(View v, boolean hasFocus) {
+//        if(binding.searchField.hasFocus()){
+//            Log.d("Running here","focus check");
+//            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//        }
+//    }
+
+
+
+
 }
