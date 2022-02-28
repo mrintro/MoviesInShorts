@@ -5,7 +5,7 @@
     tools:context=".fragments.SearchFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,20 +44,13 @@
         <!--                android:background="@color/transparent"-->
         <!--                app:srcCompat="@drawable/ic_search"/>-->
 
-<!--        <androidx.coordinatorlayout.widget.CoordinatorLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/search_field"-->
-<!--            >-->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/search_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteX="20dp"
-                android:layout_marginTop="20dp"/>
-<!--        </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_field"/>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

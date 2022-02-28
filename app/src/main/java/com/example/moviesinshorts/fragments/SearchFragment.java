@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.example.moviesinshorts.MainActivity;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentSearchBinding;
 import com.example.moviesinshorts.databinding.FragmentSearchBindingImpl;
@@ -32,6 +33,7 @@ import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.repository.MovieListRepository;
 import com.example.moviesinshorts.ui.RecyclerAdapter;
 import com.example.moviesinshorts.ui.SliderAdapter;
+import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +46,6 @@ public class SearchFragment extends Fragment {
     private Handler handler;
     FragmentSearchBinding fragmentSearchBinding;
     private MovieListViewModel movieListViewModel;
-    private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private long lastEditTime;
     private final long delay = 500;
@@ -91,8 +92,18 @@ public class SearchFragment extends Fragment {
     }
 
     private void setUpRecyclerAdapter(View view) {
-        recyclerView = fragmentSearchBinding.searchList;
-        recyclerAdapter = new RecyclerAdapter(recyclerView);
+
+        OnMovieOnClick onMovieOnClick = new OnMovieOnClick() {
+            @Override
+            public void onMovieOnClick(View view, int position) {
+                MovieDetailFragment movieDetailFragment = new MovieDetailFragment(recyclerAdapter.getMovieAtPosition(position));
+                ((MainActivity) getActivity()).changeToDetailFragment(movieDetailFragment);
+                Log.d("Listener check", "listening to " + String.valueOf(position));
+            }
+        };
+
+        RecyclerView recyclerView = fragmentSearchBinding.searchList;
+        recyclerAdapter = new RecyclerAdapter(recyclerView, onMovieOnClick);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recyclerAdapter);
     }

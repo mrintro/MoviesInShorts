@@ -94,16 +94,8 @@ public class MovieFragment extends Fragment {
         onMovieOnClick = new OnMovieOnClick() {
             @Override
             public void onMovieOnClick(View view, int position) {
-
                 MovieDetailFragment movieDetailFragment = new MovieDetailFragment(sliderAdapter.getMovieAtPosition(position));
                 ((MainActivity)getActivity()).changeToDetailFragment(movieDetailFragment);
-
-
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(getActivity()., movieDetailFragment);
-//                fragmentTransaction.addToBackStack("DetailsTransaction");
-//                fragmentTransaction.commit();
-
                 Log.d("Listener check", "listening to "+ String.valueOf(position));
             }
         };

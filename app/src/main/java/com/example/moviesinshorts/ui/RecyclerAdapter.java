@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.model.MovieModel;
+import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.Arrays;
@@ -20,9 +21,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     private List<MovieModel> movieModels;
     private RecyclerView recyclerView;
+    private final OnMovieOnClick onMovieOnClick;
 
-    public RecyclerAdapter(RecyclerView recyclerView) {
+    public RecyclerAdapter(RecyclerView recyclerView, OnMovieOnClick onMovieOnClick) {
         this.recyclerView = recyclerView;
+        this.onMovieOnClick = onMovieOnClick;
     }
 
     public MovieModel getMovieModel(int position){
@@ -63,7 +66,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         return movieModels.get(position);
     }
 
-    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public RoundedImageView imageView;
         public TextView title, rating, language, genre;
@@ -74,6 +77,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
             rating = itemView.findViewById(R.id.search_rating);
             language = itemView.findViewById(R.id.search_language);
             imageView = itemView.findViewById(R.id.search_image);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onMovieOnClick.onMovieOnClick(v,getBindingAdapterPosition());
         }
     }
 

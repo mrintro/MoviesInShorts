@@ -16,7 +16,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
-import com.example.moviesinshorts.databinding.FragmentMovieBinding;
 import com.example.moviesinshorts.fragments.MovieDetailFragment;
 import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.utils.OnMovieOnClick;

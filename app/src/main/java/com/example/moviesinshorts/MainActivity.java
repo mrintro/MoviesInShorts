@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Checking Nav", "got here");
         binding.movieDetailView.setVisibility(View.INVISIBLE);
         binding.detailScroll.setVisibility(View.VISIBLE);
+        binding.searchFragment.setVisibility(View.INVISIBLE);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.movie_detail_fragment, movieDetailFragment, "Movie Detail Page");
         fragmentTransaction.addToBackStack("DetailsPage");
