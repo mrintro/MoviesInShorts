@@ -3,6 +3,7 @@ package com.example.moviesinshorts.fragments;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -49,6 +50,7 @@ public class MovieFragment extends Fragment {
     private SliderAdapter sliderAdapter;
     private String currentFragment;
     private String fragmentName;
+//    private Database db;
 
     public String getFragmentName() {
         return fragmentName;
@@ -80,13 +82,22 @@ public class MovieFragment extends Fragment {
             @Override
             public void onChanged(List<MovieModel> movieModels) {
                 sliderAdapter.setMovieModels(movieModels);
+                saveDataToDB(movieModels);
             }
         });
 
         return movieFragmentView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        db = Database.getDatabaseInstance(getActivity());
+    }
 
+    private void saveDataToDB(List<MovieModel> movieModels) {
+//        db.dao().addMultipleMovie(movieModels);
+    }
 
 
     private void setViewPagerAdapter() {
@@ -95,7 +106,7 @@ public class MovieFragment extends Fragment {
             @Override
             public void onMovieOnClick(View view, int position) {
                 MovieDetailFragment movieDetailFragment = new MovieDetailFragment(sliderAdapter.getMovieAtPosition(position));
-                ((MainActivity)getActivity()).changeToDetailFragment(movieDetailFragment);
+//                ((MainActivity)getActivity()).changeToDetailFragment(movieDetailFragment);
                 Log.d("Listener check", "listening to "+ String.valueOf(position));
             }
         };

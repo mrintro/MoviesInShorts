@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -17,12 +18,16 @@ import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentMovieDetailBinding;
 import com.example.moviesinshorts.model.MovieModel;
 
+import java.util.List;
+
 import jp.wasabeef.blurry.Blurry;
 
 public class MovieDetailFragment extends Fragment {
 
     private final MovieModel movie;
     private FragmentMovieDetailBinding fragmentMovieDetailBinding;
+
+
     public MovieDetailFragment(MovieModel movie) {
         this.movie = movie;
     }
@@ -44,6 +49,15 @@ public class MovieDetailFragment extends Fragment {
         setData();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+//        Database db = Database.getDatabaseInstance(getActivity());
+//        List<MovieModel> movieData = db.dao().getAllMovies();
+
     }
 
     private void setData() {

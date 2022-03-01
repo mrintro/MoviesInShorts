@@ -28,7 +28,6 @@ import android.widget.TextView;
 import com.example.moviesinshorts.MainActivity;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentSearchBinding;
-import com.example.moviesinshorts.databinding.FragmentSearchBindingImpl;
 import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.repository.MovieListRepository;
 import com.example.moviesinshorts.ui.RecyclerAdapter;
@@ -87,9 +86,10 @@ public class SearchFragment extends Fragment {
         handler = new Handler();
         initHandleUserText();
         setUpRecyclerAdapter(view);
-
         return view;
     }
+
+
 
     private void setUpRecyclerAdapter(View view) {
 
@@ -97,8 +97,9 @@ public class SearchFragment extends Fragment {
             @Override
             public void onMovieOnClick(View view, int position) {
                 MovieDetailFragment movieDetailFragment = new MovieDetailFragment(recyclerAdapter.getMovieAtPosition(position));
-                ((MainActivity) getActivity()).changeToDetailFragment(movieDetailFragment);
+//                ((MainActivity) getActivity()).changeToDetailFragment(movieDetailFragment);
                 Log.d("Listener check", "listening to " + String.valueOf(position));
+
             }
         };
 
@@ -111,22 +112,23 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         initFocus();
     }
 
     private void initFocus() {
         Log.d("Focus Check","checking textview focus");
-//        fragmentSearchBinding.searchField.requestFocus();
-//        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.toggleSoftInput(fragmentSearchBinding.searchField.getId(), InputMethodManager.SHOW_IMPLICIT);
+        fragmentSearchBinding.searchField.requestFocus();
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(fragmentSearchBinding.searchField.getId(), InputMethodManager.SHOW_IMPLICIT);
     }
 
     @Override
     public void onPause() {
-//        if(getActivity().getCurrentFocus()!=null) {
-//            final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-//        }
+        if(getActivity().getCurrentFocus()!=null) {
+            final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        }
         super.onPause();
     }
 
