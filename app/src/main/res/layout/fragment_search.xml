@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:background="@drawable/search_layout"
             android:ems="10"
             android:hint="@string/search_hint"
             android:inputType="textPersonName"

@@ -11,6 +11,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,6 +85,8 @@ public class SearchFragment extends Fragment {
         fragmentSearchBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
 
         View view = fragmentSearchBinding.getRoot();
+        view.setY(0);
+        view.setX(0);
         handler = new Handler();
         initHandleUserText();
         setUpRecyclerAdapter(view);
@@ -96,9 +100,13 @@ public class SearchFragment extends Fragment {
         OnMovieOnClick onMovieOnClick = new OnMovieOnClick() {
             @Override
             public void onMovieOnClick(View view, int position) {
-                MovieDetailFragment movieDetailFragment = new MovieDetailFragment(recyclerAdapter.getMovieAtPosition(position));
-//                ((MainActivity) getActivity()).changeToDetailFragment(movieDetailFragment);
-                Log.d("Listener check", "listening to " + String.valueOf(position));
+                ((MainActivity) getActivity()).navigateToDetails(recyclerAdapter.getMovieAtPosition(position));
+//                MovieDetailFragment movieDetailFragment = new MovieDetailFragment(recyclerAdapter.getMovieAtPosition(position));
+//                NavHostFragment navHostFragment =  (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+//                NavController navController = navHostFragment.getNavController();
+//                SearchFragmentDirections.ActionSearchFragmentToMovieDetailFragment action = Act
+////                ((MainActivity) getActivity()).changeToDetailFragment(movieDetailFragment);
+//                Log.d("Listener check", "listening to " + String.valueOf(position));
 
             }
         };

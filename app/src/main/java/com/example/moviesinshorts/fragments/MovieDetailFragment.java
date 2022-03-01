@@ -24,10 +24,12 @@ import jp.wasabeef.blurry.Blurry;
 
 public class MovieDetailFragment extends Fragment {
 
-    private final MovieModel movie;
+    private MovieModel movie;
     private FragmentMovieDetailBinding fragmentMovieDetailBinding;
 
+    public MovieDetailFragment() {
 
+    }
     public MovieDetailFragment(MovieModel movie) {
         this.movie = movie;
     }
@@ -46,7 +48,6 @@ public class MovieDetailFragment extends Fragment {
         fragmentMovieDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_detail, container, false);
         View view = fragmentMovieDetailBinding.getRoot();
 
-        setData();
 
         return view;
     }
@@ -54,7 +55,8 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        movie = (MovieDetailFragmentArgs.fromBundle(getArguments()).getMovieData());
+        setData();
 //        Database db = Database.getDatabaseInstance(getActivity());
 //        List<MovieModel> movieData = db.dao().getAllMovies();
 

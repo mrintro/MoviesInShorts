@@ -1,5 +1,6 @@
 package com.example.moviesinshorts.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -107,6 +108,8 @@ public class MovieFragment extends Fragment {
             public void onMovieOnClick(View view, int position) {
                 MovieDetailFragment movieDetailFragment = new MovieDetailFragment(sliderAdapter.getMovieAtPosition(position));
 //                ((MainActivity)getActivity()).changeToDetailFragment(movieDetailFragment);
+                Log.d("Ayush", "MV" + sliderAdapter.getMovieAtPosition(position).toString());
+                ((MainActivity) getActivity()).navigateToDetailFragment(sliderAdapter.getMovieAtPosition(position));
                 Log.d("Listener check", "listening to "+ String.valueOf(position));
             }
         };
@@ -166,34 +169,34 @@ public class MovieFragment extends Fragment {
 
     }
 
-    private void getRetrofitResponse() {
+//    private void getRetrofitResponse() {
+//
+//        NowPlayingApi nowPlayingApi = (NowPlayingApi) RetroInstance.buildApi(NowPlayingApi.class);
+//        Call<MovieListResponse> responseCall = nowPlayingApi.getMovieList();
+//
+//        responseCall.enqueue(new Callback<MovieListResponse>() {
+//            @Override
+//            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+//                if(response.code() == 200){
+//                    Log.v("Response", response.body().toString());
+//                    List<MovieModel> movies = new ArrayList<>(response.body().getMovieList());
+//                    for(MovieModel movie: movies){
+//                        Log.v("Response",movie.getTitle());
+//                    }
+//
+//                } else{
+//                    Log.e("Response", response.errorBody().toString());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MovieListResponse> call, Throwable t) {
+//
+//            }
+//        });
+//
 
-        NowPlayingApi nowPlayingApi = (NowPlayingApi) RetroInstance.buildApi(NowPlayingApi.class);
-        Call<MovieListResponse> responseCall = nowPlayingApi.getMovieList();
-
-        responseCall.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                if(response.code() == 200){
-                    Log.v("Response", response.body().toString());
-                    List<MovieModel> movies = new ArrayList<>(response.body().getMovieList());
-                    for(MovieModel movie: movies){
-                        Log.v("Response",movie.getTitle());
-                    }
-
-                } else{
-                    Log.e("Response", response.errorBody().toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-
-            }
-        });
-
-
-    }
+//    }
 
     public void changeMovieFragment(FragmentManager fragmentManager, MovieFragment nextMovieFragment) {
 
@@ -224,4 +227,5 @@ public class MovieFragment extends Fragment {
 ////        fragmentTransaction.commit();
 //
 //    }
+
 }

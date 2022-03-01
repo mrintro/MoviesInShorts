@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,9 +22,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.example.moviesinshorts.databinding.ActivityMainBinding;
+import com.example.moviesinshorts.fragments.HomeFragmentDirections;
 import com.example.moviesinshorts.fragments.MovieDetailFragment;
+import com.example.moviesinshorts.fragments.MovieDetailFragmentDirections;
 import com.example.moviesinshorts.fragments.MovieFragment;
 import com.example.moviesinshorts.fragments.SearchFragment;
+import com.example.moviesinshorts.fragments.SearchFragmentDirections;
+import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         handler = new Handler();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
+        setUpSearchButton();
 //        setUpCategoryButton(fragmentManager);
 //        setUpSearchButton();
 ////        binding.searchField.setOnFocusChangeListener(this);
@@ -61,6 +69,29 @@ public class MainActivity extends AppCompatActivity {
 //        initMovieFragment(fragmentManager, trendingInstance);
 //        initTextChangeListener();
 
+    }
+
+//    public void navigate(MovieModel movie, Object action) {
+//        NavHostFragment navHostFragment =  (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+//        NavController navController = navHostFragment.getNavController();
+//        action instanceof  ? (() action) : null;
+//    }
+
+    public void navigateToDetailFragment(MovieModel movie ) {
+        NavHostFragment navHostFragment =  (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+        NavController navController = navHostFragment.getNavController();
+        Log.d("Ayush", "Ayush " + movie.getTitle());
+        HomeFragmentDirections.ActionHomeFragmentToMovieDetailFragment action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie);
+        action.setMovieData(movie);
+        navController.navigate(action);
+    }
+
+    public void navigateToDetails(MovieModel movie) {
+        NavHostFragment navHostFragment =  (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+        NavController navController = navHostFragment.getNavController();
+        SearchFragmentDirections.ActionSearchFragmentToMovieDetailFragment action = SearchFragmentDirections.actionSearchFragmentToMovieDetailFragment(movie);
+        action.setMovieData(movie);
+        navController.navigate(action);
     }
 
 //    private void initTextChangeListener() {
@@ -94,23 +125,25 @@ public class MainActivity extends AppCompatActivity {
 //        fragmentManager.popBackStack();
 //    }
 //
-//    private void setUpSearchButton() {
-//        binding.searchButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                binding.searchButton.setVisibility(View.INVISIBLE);
-//                binding.movieDetailView.setVisibility(View.INVISIBLE);
-//                binding.searchFragment.setVisibility(View.VISIBLE);
-////                binding.searchField.setVisibility(View.VISIBLE);
-//                SearchFragment searchFragment = new SearchFragment();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.search_fragment, searchFragment, "going to search fragment").addToBackStack("search from main");
-//                fragmentTransaction.commit();
-//
-//            }
-//        });
-//    }
-//
+    private void setUpSearchButton() {
+        binding.searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                NavHostFragment navHostFragment =  (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+                NavController navController = navHostFragment.getNavController();
+               Log.d("Ayush", "Ayush " +  navController.getCurrentDestination().getDisplayName());
+               if (navController.getCurrentDestination().getDisplayName().equals("com.example.moviesinshorts:id/homeFragment"))
+                navController.navigate(R.id.action_homeFragment_to_searchFragment);
+               else
+                   navController.navigate(R.id.action_movieDetailFragment_to_searchFragment);
+
+//                binding.searchField.setVisibility(View.VISIBLE);
+
+            }
+        });
+    }
+
 
 
 //    @SuppressLint("ResourceAsColor")

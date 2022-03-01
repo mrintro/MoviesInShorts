@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentHomeBinding;
+import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +54,7 @@ public class HomeFragment extends Fragment {
         initMovieFragment();
         
         return view;
+
     }
 
 
@@ -68,10 +70,11 @@ public class HomeFragment extends Fragment {
 
 
     private void initInstances() {
-        nowPlayingInstance = new MovieFragment(Constants.NOW_PLAYING_FRAGMENT);
-        Log.d(nowPlayingInstance.getFragmentName(),"checking");
-        trendingInstance = new MovieFragment(Constants.TRENDING_FRAGMENT);
-        Log.d(nowPlayingInstance.getFragmentName(),"checking");
+            nowPlayingInstance = new MovieFragment(Constants.NOW_PLAYING_FRAGMENT);
+            Log.d(nowPlayingInstance.getFragmentName(), "checking");
+            trendingInstance = new MovieFragment(Constants.TRENDING_FRAGMENT);
+            Log.d(nowPlayingInstance.getFragmentName(), "checking");
+
     }
 
     private void setUpCategoryButton() {
