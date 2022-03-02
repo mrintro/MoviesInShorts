@@ -28,33 +28,33 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-<!--        <com.google.android.flexbox.FlexboxLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:justifyContent="space_around"-->
-<!--        >-->
-<!--            <Button-->
-<!--                android:id="@+id/trending_button"-->
-<!--                style="@style/active_button_style"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/active_trending"-->
-<!--                app:layout_alignSelf="center"-->
-<!--                android:background="@color/transparent"-->
-<!--                />-->
-<!--            <Button-->
-<!--                android:id="@+id/now_playing_button"-->
-<!--                style="@style/inactive_button_style"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/now_playing"-->
-<!--                android:background="@color/transparent"-->
-<!--                />-->
-<!--        </com.google.android.flexbox.FlexboxLayout>-->
+        <!--        <com.google.android.flexbox.FlexboxLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            android:layout_marginTop="20dp"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:justifyContent="space_around"-->
+        <!--        >-->
+        <!--            <Button-->
+        <!--                android:id="@+id/trending_button"-->
+        <!--                style="@style/active_button_style"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="@string/active_trending"-->
+        <!--                app:layout_alignSelf="center"-->
+        <!--                android:background="@color/transparent"-->
+        <!--                />-->
+        <!--            <Button-->
+        <!--                android:id="@+id/now_playing_button"-->
+        <!--                style="@style/inactive_button_style"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="@string/now_playing"-->
+        <!--                android:background="@color/transparent"-->
+        <!--                />-->
+        <!--        </com.google.android.flexbox.FlexboxLayout>-->
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerSlider"
@@ -83,23 +83,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPagerSlider" />
 
+
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/imdb_comtainer"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:background="@drawable/imdb_layout"
+            android:paddingHorizontal="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/background_image"
             app:layout_constraintTop_toBottomOf="@+id/background_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/imdb_layout"
-            android:paddingHorizontal="10dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="20dp">
             <ImageButton
                 android:id="@+id/imdb"
-                android:layout_marginEnd="10dp"
-                android:paddingTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:paddingTop="10dp"
                 android:background="@color/transparent"
                 app:srcCompat="@mipmap/imdb"/>
             <TextView

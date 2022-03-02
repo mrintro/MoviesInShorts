@@ -155,4 +155,9 @@ public class MovieListRepository {
         return searchFromApi;
     }
 
+    public void bookMarkMovie(int id, boolean flag){
+        getDatabaseInstance(application).dao().bookMarkMovie(id, flag);
+    }
+
+
 }

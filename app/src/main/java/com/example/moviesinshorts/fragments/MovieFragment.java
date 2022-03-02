@@ -57,6 +57,8 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this, new MyViewModelFactory(this.getActivity().getApplication())).get(MovieListViewModel.class);
+
     }
 
     @Override
@@ -69,7 +71,8 @@ public class MovieFragment extends Fragment {
 
         setViewPagerAdapter();
 
-        viewModel = new ViewModelProvider(this, new MyViewModelFactory(this.getActivity().getApplication())).get(MovieListViewModel.class);
+        Log.d("Check","onCreatecalled");
+
         if(fragmentName.equals(Constants.TRENDING_FRAGMENT)) {
             viewModel.getTrendingMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
 
@@ -90,7 +93,6 @@ public class MovieFragment extends Fragment {
                 }
             });
         }
-
         return movieFragmentView;
     }
 
@@ -119,7 +121,7 @@ public class MovieFragment extends Fragment {
         };
 
         viewPager2 = fragmentMovieBinding.viewPagerSlider;
-        sliderAdapter = new SliderAdapter(viewPager2, onMovieOnClick);
+        sliderAdapter = new SliderAdapter(viewPager2, onMovieOnClick, getActivity().getApplication());
 
         viewPager2.setAdapter(sliderAdapter);
 
@@ -134,6 +136,7 @@ public class MovieFragment extends Fragment {
         compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
             @Override
             public void transformPage(@NonNull View page, float position) {
+                Log.d("Check", "checking");
                 float r = 1-Math.abs(position);
 //                page.setScaleY(0.85f + r*0.15f);
                 page.findViewById(R.id.imageSlide).setScaleY(0.85f + r*0.15f);

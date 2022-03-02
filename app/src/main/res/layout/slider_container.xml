@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.makeramen.roundedimageview.RoundedImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/imageSlide"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scaleType="centerCrop"
-    app:riv_corner_radius="12dp">
+    >
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageSlide"
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="12dp"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/bookmark_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/bookmark_white"
+        android:layout_marginEnd="-800dp"/>
 
-</com.makeramen.roundedimageview.RoundedImageView>
+    </FrameLayout>
+</FrameLayout>

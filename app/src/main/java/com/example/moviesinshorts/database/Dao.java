@@ -40,6 +40,9 @@ public abstract class Dao {
     @Query("update MovieModel set trending=:flag WHERE MovieModel.id = :id")
     public abstract void updateTrending(int id, boolean flag);
 
+    @Query("update MovieModel set bookmark=:flag WHERE MovieModel.id = :id")
+    public abstract void bookMarkMovie(int id, boolean flag);
+
 
     @Transaction
     public void upsertTrending(List<MovieModel> movieModelList){

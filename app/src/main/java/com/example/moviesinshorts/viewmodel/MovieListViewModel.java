@@ -43,7 +43,8 @@ public class MovieListViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public LiveData<List<MovieModel>> getTrendingMovies(){
         movieListRepository.getTrendingMovie().subscribe(movieModelList -> {
-            Log.d("Check","checking subscribe");
+            Log.d("myapp", Log.getStackTraceString(new Exception()));
+            Log.d("Check","checking subscribe api1");
             trendingMovieList.postValue(movieModelList);
         });
         return trendingMovieList;
@@ -52,7 +53,7 @@ public class MovieListViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public LiveData<List<MovieModel>> getNowPlayingMovies(){
         movieListRepository.getNowPlayingMovies().subscribe(movieModelList -> {
-            Log.d("Check","checking subscribe");
+            Log.d("Check","checking subscribe api2");
             nowPlayingMovieList.postValue(movieModelList);
         });
         return nowPlayingMovieList;
@@ -60,14 +61,15 @@ public class MovieListViewModel extends ViewModel {
 
     @SuppressLint("CheckResult")
     public LiveData<List<MovieModel>> getSearchMovie(String searchText){
-        if(!NetworkHelper.checkNetwork(application)) {
+        Log.d("Check","Check Result Api");
+        if(NetworkHelper.checkNetwork(application)) {
             movieListRepository.getSearchMovie(searchText).subscribeOn(AndroidSchedulers.mainThread()).subscribe(searchMovieList::postValue);
         }
         return searchMovieList;
     }
 
-    public void makeNowTrendingApiCall() {
-
+    public void bookMarkMovie(int id, boolean flag) {
+        movieListRepository.bookMarkMovie(id, flag);
     }
 
 }
