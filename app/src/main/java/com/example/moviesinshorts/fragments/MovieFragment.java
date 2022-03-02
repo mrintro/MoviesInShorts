@@ -1,8 +1,6 @@
 package com.example.moviesinshorts.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -33,14 +31,8 @@ import com.example.moviesinshorts.ui.SliderAdapter;
 import com.example.moviesinshorts.utils.Constants;
 import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
-
-import java.util.ArrayList;
+import com.example.moviesinshorts.viewmodel.MyViewModelFactory;
 import java.util.List;
-import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MovieFragment extends Fragment {
 
@@ -77,15 +69,27 @@ public class MovieFragment extends Fragment {
 
         setViewPagerAdapter();
 
-        viewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
-        viewModel.getMovies(this.fragmentName).observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
+        viewModel = new ViewModelProvider(this, new MyViewModelFactory(this.getActivity().getApplication())).get(MovieListViewModel.class);
+        if(fragmentName.equals(Constants.TRENDING_FRAGMENT)) {
+            viewModel.getTrendingMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
 
-            @Override
-            public void onChanged(List<MovieModel> movieModels) {
-                sliderAdapter.setMovieModels(movieModels);
-                saveDataToDB(movieModels);
-            }
-        });
+                @Override
+                public void onChanged(List<MovieModel> movieModels) {
+                    sliderAdapter.setMovieModels(movieModels);
+                    saveDataToDB(movieModels);
+                }
+            });
+        } else if(fragmentName.equals(Constants.NOW_PLAYING_FRAGMENT)){
+            Log.d("If fragment called", Constants.NOW_PLAYING_FRAGMENT);
+            viewModel.getNowPlayingMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
+
+                @Override
+                public void onChanged(List<MovieModel> movieModels) {
+                    sliderAdapter.setMovieModels(movieModels);
+                    saveDataToDB(movieModels);
+                }
+            });
+        }
 
         return movieFragmentView;
     }

@@ -6,12 +6,14 @@ import android.os.Parcelable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.moviesinshorts.database.tables.Movie;
+
 import java.util.ArrayList;
 
+@Entity
 public class MovieModel implements Parcelable {
-    private boolean adult;
     private String backdrop_path;
-    private ArrayList<Integer> genre_ids;
+    @PrimaryKey
     private int id;
     private String original_language;
     private String original_title;
@@ -20,11 +22,17 @@ public class MovieModel implements Parcelable {
     private String poster_path;
     private String release_date;
     private String title;
+    private boolean video;
+    private double vote_average;
+    private int vote_count;
+    private boolean bookmark = false;
+    private boolean trending = false;
+    private boolean nowPlaying = false;
+
+    public MovieModel(){}
 
     public MovieModel(boolean adult, String backdrop_path, ArrayList<Integer> genre_ids, int id, String original_language, String original_title, String overview, double popularity, String poster_path, String release_date, String title, boolean video, double vote_average, int vote_count) {
-        this.adult = adult;
         this.backdrop_path = backdrop_path;
-        this.genre_ids = genre_ids;
         this.id = id;
         this.original_language = original_language;
         this.original_title = original_title;
@@ -36,14 +44,36 @@ public class MovieModel implements Parcelable {
         this.video = video;
         this.vote_average = vote_average;
         this.vote_count = vote_count;
+        this.bookmark = false;
+        this.trending = false;
+        this.nowPlaying = false;
     }
 
-    private boolean video;
-    private double vote_average;
-    private int vote_count;
+    public boolean isBookmark() {
+        return bookmark;
+    }
+
+    public boolean isTrending() {
+        return trending;
+    }
+
+    public boolean isNowPlaying() {
+        return nowPlaying;
+    }
+
+    public void setBookmark(boolean bookmark) {
+        this.bookmark = bookmark;
+    }
+
+    public void setNowPlaying(boolean nowPlaying) {
+        this.nowPlaying = nowPlaying;
+    }
+
+    public void setTrending(boolean trending) {
+        this.trending = trending;
+    }
 
     protected MovieModel(Parcel in) {
-        adult = in.readByte() != 0;
         backdrop_path = in.readString();
         id = in.readInt();
         original_language = in.readString();
@@ -56,6 +86,9 @@ public class MovieModel implements Parcelable {
         video = in.readByte() != 0;
         vote_average = in.readDouble();
         vote_count = in.readInt();
+        bookmark = false;
+        nowPlaying = false;
+        trending = false;
     }
 
     public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
@@ -69,29 +102,12 @@ public class MovieModel implements Parcelable {
             return new MovieModel[size];
         }
     };
-
-    public boolean isAdult() {
-        return adult;
-    }
-
-    public void setAdult(boolean adult) {
-        this.adult = adult;
-    }
-
     public String getBackdrop_path() {
         return backdrop_path;
     }
 
     public void setBackdrop_path(String backdrop_path) {
         this.backdrop_path = backdrop_path;
-    }
-
-    public ArrayList<Integer> getGenre_ids() {
-        return genre_ids;
-    }
-
-    public void setGenre_ids(ArrayList<Integer> genre_ids) {
-        this.genre_ids = genre_ids;
     }
 
     public int getId() {
@@ -189,7 +205,6 @@ public class MovieModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (adult ? 1 : 0));
         dest.writeString(backdrop_path);
         dest.writeInt(id);
         dest.writeString(original_language);
@@ -202,5 +217,8 @@ public class MovieModel implements Parcelable {
         dest.writeByte((byte) (video ? 1 : 0));
         dest.writeDouble(vote_average);
         dest.writeInt(vote_count);
+        dest.writeByte((byte) (bookmark ? 1 : 0));
+        dest.writeByte((byte) (trending ? 1 : 0));
+        dest.writeByte((byte) (nowPlaying ? 1 : 0));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.moviesinshorts.viewmodel;
 
+import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -21,12 +22,16 @@ public class MovieListViewModel extends ViewModel {
 
     private MovieListRepository movieListRepository;
 
-    public MovieListViewModel(){
-        movieListRepository = MovieListRepository.getMovieListRepositoryInstance();
+    public MovieListViewModel(Application application){
+        movieListRepository = MovieListRepository.getMovieListRepositoryInstance(application);
     }
 
-    public LiveData<List<MovieModel>> getMovies(String fragmentName){
-        return movieListRepository.getMovies(fragmentName);
+    public LiveData<List<MovieModel>> getTrendingMovies(){
+        return movieListRepository.getTrendingMovie();
+    }
+
+    public LiveData<List<MovieModel>> getNowPlayingMovies(){
+        return movieListRepository.getNowPlayingMovies();
     }
 
     public LiveData<List<MovieModel>> getSearchMovie(String searchText){
