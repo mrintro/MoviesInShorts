@@ -36,6 +36,7 @@ import com.example.moviesinshorts.ui.RecyclerAdapter;
 import com.example.moviesinshorts.ui.SliderAdapter;
 import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
+import com.example.moviesinshorts.viewmodel.MyViewModelFactory;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +75,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movieListViewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
+        movieListViewModel = new ViewModelProvider(this, new MyViewModelFactory(this.getActivity().getApplication())).get(MovieListViewModel.class);
 
     }
 
@@ -101,13 +102,6 @@ public class SearchFragment extends Fragment {
             @Override
             public void onMovieOnClick(View view, int position) {
                 ((MainActivity) getActivity()).navigateToDetails(recyclerAdapter.getMovieAtPosition(position));
-//                MovieDetailFragment movieDetailFragment = new MovieDetailFragment(recyclerAdapter.getMovieAtPosition(position));
-//                NavHostFragment navHostFragment =  (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
-//                NavController navController = navHostFragment.getNavController();
-//                SearchFragmentDirections.ActionSearchFragmentToMovieDetailFragment action = Act
-////                ((MainActivity) getActivity()).changeToDetailFragment(movieDetailFragment);
-//                Log.d("Listener check", "listening to " + String.valueOf(position));
-
             }
         };
 

@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.fragments.MovieDetailFragment;
 import com.example.moviesinshorts.model.MovieModel;
+import com.example.moviesinshorts.utils.NetworkHelper;
 import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -59,10 +60,15 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
-        Glide.with(holder.itemView.getContext())
-                .load("https://image.tmdb.org/t/p/w500/"+movieModels.get(position).getPoster_path())
-                .into((holder).imageView);
+        if(NetworkHelper.checkNetwork(holder.itemView.getContext())) {
+            Glide.with(holder.itemView.getContext())
+                    .load("https://image.tmdb.org/t/p/w500/" + movieModels.get(position).getPoster_path())
+                    .into((holder).imageView);
+        } else {
+            Glide.with(holder.itemView.getContext())
+                    .load(R.drawable.ic_launcher_foreground)
+                    .into(holder.imageView);
+        }
 
 //        holder.imageView.setOnClickListener(new View.OnClickListener() {
 //            @Override

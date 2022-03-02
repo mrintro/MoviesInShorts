@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -16,10 +17,10 @@ import com.example.moviesinshorts.network.SearchQueryApi;
 import com.example.moviesinshorts.network.TrendingApi;
 import com.example.moviesinshorts.response.MovieListResponse;
 import com.example.moviesinshorts.response.MovieResponse;
-import com.example.moviesinshorts.utils.ApiThreadExecutors;
 import com.example.moviesinshorts.utils.Constants;
 import com.example.moviesinshorts.utils.Credentials;
 import com.example.moviesinshorts.utils.MovieModelToMovieConverter;
+import com.example.moviesinshorts.utils.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,18 +41,14 @@ import retrofit2.http.Query;
 public class MovieListRepository {
 
     private static MovieListRepository movieListRepositoryInstance;
-    private final MutableLiveData<List<MovieModel>> nowPlayingMovieList;
-    private final MutableLiveData<List<MovieModel>> trendingMovieList;
     private MutableLiveData<List<MovieModel>> searchedMovieList;
     private NowPlayingApi nowPlayingApi;
     private TrendingApi trendingApi;
     private SearchQueryApi searchQueryApi;
+    private Application application;
 
     private static Database database;
 
-    private static void accept(Object data) {
-
-    }
 
     private NowPlayingApi getNowPlayingApi() {
         if(nowPlayingApi==null) nowPlayingApi= (NowPlayingApi) RetroInstance.buildApi(NowPlayingApi.class);
@@ -71,109 +69,90 @@ public class MovieListRepository {
         return movieListRepositoryInstance;
     }
 
-//    public static getDatabaseInstance() {
-//        if(database==null) database = Database.getDatabaseInstance();
-//    }
+    public static Database getDatabaseInstance(Application application) {
+        if(database==null) database = Database.getDatabaseInstance(application);
+        return database;
+    }
 
     private MovieListRepository(Application application) {
-        searchedMovieList = new MutableLiveData<List<MovieModel>>();
-        trendingMovieList = new MutableLiveData<List<MovieModel>>();
-        nowPlayingMovieList = new MutableLiveData<List<MovieModel>>();
-        database = Database.getDatabaseInstance(application);
+        this.application = application;
     }
 
     @SuppressLint("CheckResult")
-    public LiveData<List<MovieModel>> getNowPlayingMovies(){
+    public Observable<List<MovieModel>> getNowPlayingMovies(){
+        Observable<List<MovieModel>> dataFromDb= getDatabaseInstance(application).dao().getAllNowPlayingMovies()
+                .filter(movieModelList -> movieModelList.size()>0)
+                .subscribeOn(Schedulers.computation());
 
-        Log.d("API Check","Checking if working1"+Constants.NOW_PLAYING_FRAGMENT);
-        try {
-            getTrendingApi().getMovieList()
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(movieListResponse -> {
-                        nowPlayingMovieList.postValue(movieListResponse.getMovieList());
-                    });
-        } catch (Exception e) {
-            Log.d("API FAILURE", "Unable to fetch data from Trending API");
+        if(NetworkHelper.checkNetwork(application)) {
+            Observable<List<MovieModel>> dataFromApi = getNowPlayingApi().getMovieList().map(new Function<MovieListResponse, List<MovieModel>>() {
+                @Override
+                public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
+                    Log.d("checking", "check map");
+                    return movieListResponse.getMovieList();
+                }
+            })
+            .map(movieModelList -> {
+                Observable.create(subscribe -> {
+                    database.dao().upsertNowPlaying(movieModelList);
+                    subscribe.onComplete();
+                }).subscribeOn(Schedulers.computation()).subscribe();
+                return movieModelList;
+            })
+            .subscribeOn(Schedulers.io());
+            Log.d("check data", "check" + dataFromApi.toString());
+            return Observable.concat(dataFromApi, dataFromDb).observeOn(AndroidSchedulers.mainThread());
+        } else {
+            return dataFromDb.observeOn(AndroidSchedulers.mainThread());
         }
-
-        return nowPlayingMovieList;
     }
 
-    public LiveData<List<MovieModel>> getTrendingMovie(){
-        try {
+    public Observable<List<MovieModel>> getTrendingMovie(){
 
-            Observable<List<MovieModel>> movieListDb = database.dao().getAllTrendingMovies()
+        Log.d("API Check","Checking if working1"+Constants.TRENDING_FRAGMENT);
+
+            Log.d("API Check","Checking if working1"+Constants.TRENDING_FRAGMENT);
+
+            Observable<List<MovieModel>> dataFromDb= getDatabaseInstance(application).dao().getAllTrendingMovies()
                     .filter(movieModelList -> movieModelList.size()>0)
                     .subscribeOn(Schedulers.computation());
 
-            Observable<MovieListResponse> movieListApi = getTrendingApi().getMovieList()
-                    .subscribeOn(Schedulers.io())
-                    .doOnNext(movieListResponse -> {
-                        movieListResponse.getMovieList().forEach((movie) -> movie.setTrending(true));
-                        database.dao().addMultipleMovie(movieListResponse.getMovieList());
-                    })
-                    .subscribeOn(Schedulers.computation());
-
-            Observable.concat(movieListDb.observeOn(AndroidSchedulers.mainThread()) , movieListApi.observeOn(AndroidSchedulers.mainThread()))
-                    .subscribe(
-                            MovieListRepository::accept
-                    );
-
-
-         }catch (Exception e){
-            Log.d("API FAILURE","Unable to fetch data from Trending API");
-        }
-
-        return trendingMovieList;
-
+            if(NetworkHelper.checkNetwork(application)) {
+                Observable<List<MovieModel>> dataFromApi = getTrendingApi().getMovieList().map(new Function<MovieListResponse, List<MovieModel>>() {
+                    @Override
+                    public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
+                        Log.d("checking", "check map");
+                        return movieListResponse.getMovieList();
+                    }
+                })
+                        .map(movieModelList -> {
+                            Observable.create(subscribe -> {
+                                database.dao().upsertTrending(movieModelList);
+                                subscribe.onComplete();
+                            }).subscribeOn(Schedulers.computation()).subscribe();
+                            return movieModelList;
+                        })
+                        .subscribeOn(Schedulers.io());
+                Log.d("check data", "check" + dataFromApi.toString());
+                return Observable.concat(dataFromApi, dataFromDb).observeOn(AndroidSchedulers.mainThread());
+            } else {
+                return dataFromDb.observeOn(AndroidSchedulers.mainThread());
+            }
     }
-//            Call<MovieListResponse> responseCall = getTrendingApi().getMovieList();
-//            responseCall.enqueue(new Callback<MovieListResponse>() {
-//                @Override
-//                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-//                    if (response.code() == 200) {
-//                        movieList.postValue(response.body().getMovieList());
-//                    } else {
-//                        Log.e("Response", response.errorBody().toString());
-//                        movieList.postValue(null);
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<MovieListResponse> call, Throwable t) {
-//                    Log.e("Api Failed", t.toString());
-//                    movieList.postValue(null);
-//                }
-//            });
-//        }
 
 
 
-    public LiveData<List<MovieModel>> getSearchMovie(String searchText) {
+    public Observable<List<MovieModel>> getSearchMovie(String searchText) {
 
-        Log.d("Search String",searchText);
-        Call<MovieListResponse> responseCall = getSearchQueryApi().getSearchedMovie(
-                searchText
-        );
+        Observable<List<MovieModel>> searchFromApi = getSearchQueryApi().getSearchedMovie(searchText)
+                .map(new Function<MovieListResponse, List<MovieModel>>() {
+                    @Override
+                    public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
+                        return movieListResponse.getMovieList();
+                    }
+                }).subscribeOn(Schedulers.io());
 
-        responseCall.enqueue(new Callback<MovieListResponse>() {
-            @Override
-            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                if (response.code() == 200) {
-                    Log.d("Response", response.message().toString());
-                    searchedMovieList.postValue(response.body().getMovieList());
-                } else {
-                    Log.e("Response", String.valueOf(response.code()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                Log.e("Api Failed", t.toString());
-            }
-        });
-
-        return searchedMovieList;
+        return searchFromApi;
     }
 
 }

@@ -30,6 +30,9 @@ public abstract class Dao {
     @Query("SELECT * FROM MovieModel where MovieModel.trending=1")
     public abstract  Observable<List<MovieModel>> getAllTrendingMovies();
 
+    @Query("SELECT * FROM MovieModel where MovieModel.nowPlaying=1")
+    public abstract  Observable<List<MovieModel>> getAllNowPlayingMovies();
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     public abstract List<Long> addMultipleMovie(List<MovieModel> movieList);
@@ -41,19 +44,17 @@ public abstract class Dao {
     @Transaction
     public void upsertTrending(List<MovieModel> movieModelList){
         List<Long> insertResults = addMultipleMovie(movieModelList);
-        List<MovieModel> updateList = new ArrayList<MovieModel>();
         for(int i=0;i<movieModelList.size();i++){
             if(insertResults.get(i)==-1) updateTrending(movieModelList.get(i).getId(), true);
         }
     }
 
-    @Query("update MovieModel set trending=:flag WHERE MovieModel.id = :id")
+    @Query("update MovieModel set nowPlaying=:flag WHERE MovieModel.id = :id")
     public abstract void updateNowPlaying(int id, boolean flag);
 
     @Transaction
     public void upsertNowPlaying(List<MovieModel> movieModelList){
         List<Long> insertResults = addMultipleMovie(movieModelList);
-        List<MovieModel> updateList = new ArrayList<MovieModel>();
         for(int i=0;i<movieModelList.size();i++){
             if(insertResults.get(i)==-1) updateNowPlaying(movieModelList.get(i).getId(), true);
         }
