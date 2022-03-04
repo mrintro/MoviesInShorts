@@ -26,6 +26,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/bookmark_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/detail_image"
+                app:layout_constraintStart_toStartOf="@+id/detail_image"
+                android:src="@drawable/bookmark_white"
+                />
 
             <TextView
                 android:id="@+id/title"

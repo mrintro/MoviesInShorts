@@ -42,6 +42,8 @@ public class HomeFragment extends Fragment {
         fragmentManager = getActivity().getSupportFragmentManager();
     }
 
+
+
     
     @Nullable
     @Override

@@ -21,7 +21,7 @@
             android:alpha="0.3"
             android:scaleType="centerCrop"
             app:riv_corner_radius="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bookmarkButton"
             app:layout_constraintDimensionRatio="H,2:3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,8 @@
             android:maxLines="1"
             android:gravity="center"
             android:ellipsize="end"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/bookmarkButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPagerSlider" />
@@ -115,6 +116,16 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <Button
+            android:id="@+id/bookmarkButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imdb_comtainer"
+            android:text="Bookmarks"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 

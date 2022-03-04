@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentMovieDetailBinding;
 import com.example.moviesinshorts.model.MovieModel;
+import com.example.moviesinshorts.viewmodel.MovieListViewModel;
+import com.example.moviesinshorts.viewmodel.MyViewModelFactory;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class MovieDetailFragment extends Fragment {
 
     private MovieModel movie;
     private FragmentMovieDetailBinding fragmentMovieDetailBinding;
+    private MovieListViewModel movieListViewModel;
 
     public MovieDetailFragment() {
 
@@ -41,13 +45,9 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        Log.d("OncreateView","Called");
-
-
         fragmentMovieDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_detail, container, false);
         View view = fragmentMovieDetailBinding.getRoot();
-
+        movieListViewModel = new ViewModelProvider(this, new MyViewModelFactory(this.getActivity().getApplication())).get(MovieListViewModel.class);
 
         return view;
     }
@@ -57,9 +57,30 @@ public class MovieDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         movie = (MovieDetailFragmentArgs.fromBundle(getArguments()).getMovieData());
         setData();
-//        Database db = Database.getDatabaseInstance(getActivity());
-//        List<MovieModel> movieData = db.dao().getAllMovies();
+        setBookmarkButton();
 
+    }
+
+
+    private void setBookmarkButton() {
+
+        fragmentMovieDetailBinding.bookmarkImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                movieListViewModel.bookMarkMovie(movie.getId(), !movie.isBookmark());
+                movie.setBookmark(!movie.isBookmark());
+                configureBookmarkImage(movie.isBookmark());
+            }
+        });
+
+    }
+
+    private void configureBookmarkImage(boolean bookmark) {
+        if(bookmark){
+            fragmentMovieDetailBinding.bookmarkImage.setImageResource(R.drawable.bookmark_red);
+        }else {
+            fragmentMovieDetailBinding.bookmarkImage.setImageResource(R.drawable.bookmark_white);
+        }
     }
 
     private void setData() {
@@ -73,6 +94,7 @@ public class MovieDetailFragment extends Fragment {
         fragmentMovieDetailBinding.title.setText(movie.getTitle());
         fragmentMovieDetailBinding.language.setText(movie.getOriginal_language());
         fragmentMovieDetailBinding.rating.setText("  |  "+ movie.getVote_average());
+        configureBookmarkImage(movie.isBookmark());
 
         fragmentMovieDetailBinding.mainContainer.setVisibility(View.VISIBLE);
         Glide.with(requireContext())

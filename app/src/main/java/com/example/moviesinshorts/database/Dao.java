@@ -1,5 +1,7 @@
 package com.example.moviesinshorts.database;
 
+import android.util.Pair;
+
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -62,6 +64,16 @@ public abstract class Dao {
             if(insertResults.get(i)==-1) updateNowPlaying(movieModelList.get(i).getId(), true);
         }
     }
+
+    @Transaction
+    public void bookMarkMultipleMovie(ArrayList<Pair<Integer, Boolean>> bookmarkData){
+        for(Pair<Integer, Boolean> data : bookmarkData){
+            bookMarkMovie(data.first, data.second);
+        }
+    }
+
+    @Query("SELECT * FROM MovieModel where MovieModel.bookmark=1")
+    public abstract Observable<List<MovieModel>> getBookmarkedMovies();
 
 
 

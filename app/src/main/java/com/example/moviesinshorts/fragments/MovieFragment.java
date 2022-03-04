@@ -1,5 +1,7 @@
 package com.example.moviesinshorts.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +17,7 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +35,10 @@ import com.example.moviesinshorts.utils.Constants;
 import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
 import com.example.moviesinshorts.viewmodel.MyViewModelFactory;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MovieFragment extends Fragment {
 
@@ -43,14 +49,13 @@ public class MovieFragment extends Fragment {
     private SliderAdapter sliderAdapter;
     private String currentFragment;
     private String fragmentName;
-//    private Database db;
+    private SharedPreferences sharedPreferences;
 
     public String getFragmentName() {
         return fragmentName;
     }
 
     public MovieFragment(String fragmentName) {
-        // Required empty public constructor
         this.fragmentName = fragmentName;
     }
 
@@ -66,10 +71,11 @@ public class MovieFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         fragmentMovieBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false);
-
         View movieFragmentView = fragmentMovieBinding.getRoot();
-
+        sharedPreferences = getActivity().getSharedPreferences("Bookmark", Context.MODE_PRIVATE);
+        
         setViewPagerAdapter();
+        setUpBookmarkButton();
 
         Log.d("Check","onCreatecalled");
 
@@ -78,8 +84,8 @@ public class MovieFragment extends Fragment {
 
                 @Override
                 public void onChanged(List<MovieModel> movieModels) {
+                    Log.d("Data changed found in trending", "check"+movieModels.toString());
                     sliderAdapter.setMovieModels(movieModels);
-                    saveDataToDB(movieModels);
                 }
             });
         } else if(fragmentName.equals(Constants.NOW_PLAYING_FRAGMENT)){
@@ -88,13 +94,27 @@ public class MovieFragment extends Fragment {
 
                 @Override
                 public void onChanged(List<MovieModel> movieModels) {
+                    Log.d("Data changed found in now playing", "check");
                     sliderAdapter.setMovieModels(movieModels);
-                    saveDataToDB(movieModels);
                 }
             });
         }
         return movieFragmentView;
     }
+
+
+
+    private void setUpBookmarkButton() {
+
+        fragmentMovieBinding.bookmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).navigateToBookmarks();
+            }
+        });
+
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -121,7 +141,7 @@ public class MovieFragment extends Fragment {
         };
 
         viewPager2 = fragmentMovieBinding.viewPagerSlider;
-        sliderAdapter = new SliderAdapter(viewPager2, onMovieOnClick, getActivity().getApplication());
+        sliderAdapter = new SliderAdapter(viewPager2, onMovieOnClick, getActivity().getApplication(), fragmentMovieBinding, viewModel);
 
         viewPager2.setAdapter(sliderAdapter);
 
@@ -138,16 +158,24 @@ public class MovieFragment extends Fragment {
             public void transformPage(@NonNull View page, float position) {
                 Log.d("Check", "checking");
                 float r = 1-Math.abs(position);
-//                page.setScaleY(0.85f + r*0.15f);
-                page.findViewById(R.id.imageSlide).setScaleY(0.85f + r*0.15f);
+                page.setScaleY(0.85f + r*0.15f);
+//                page.findViewById(R.id.imageSlide).setScaleY(0.85f + r*0.15f);
+//                page.findViewById(R.id.bookmark_image).setScaleY(0.85f + r*0.15f);
             }
         });
 
         viewPager2.setPageTransformer(compositePageTransformer);
 
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
                 MovieModel movie = sliderAdapter.getMovieModel(position);
                 fragmentMovieBinding.movieTitle.setText(movie.getTitle());
 
@@ -156,11 +184,6 @@ public class MovieFragment extends Fragment {
                         .into(fragmentMovieBinding.backgroundImage);
                 fragmentMovieBinding.imdbText.setText(String.valueOf(movie.getVote_average()));
 
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
                 super.onPageSelected(position);
             }
 
@@ -176,50 +199,34 @@ public class MovieFragment extends Fragment {
 
     }
 
-//    private void getRetrofitResponse() {
-//
-//        NowPlayingApi nowPlayingApi = (NowPlayingApi) RetroInstance.buildApi(NowPlayingApi.class);
-//        Call<MovieListResponse> responseCall = nowPlayingApi.getMovieList();
-//
-//        responseCall.enqueue(new Callback<MovieListResponse>() {
-//            @Override
-//            public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-//                if(response.code() == 200){
-//                    Log.v("Response", response.body().toString());
-//                    List<MovieModel> movies = new ArrayList<>(response.body().getMovieList());
-//                    for(MovieModel movie: movies){
-//                        Log.v("Response",movie.getTitle());
-//                    }
-//
-//                } else{
-//                    Log.e("Response", response.errorBody().toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<MovieListResponse> call, Throwable t) {
-//
-//            }
-//        });
-//
+    @Override
+    public void onDestroy() {
+        ArrayList<Pair<Integer, Boolean>> bookmarkData = new ArrayList<Pair <Integer, Boolean>>();
+        Map<String,?> keys = sharedPreferences.getAll();
 
-//    }
-
-    public void changeMovieFragment(FragmentManager fragmentManager, MovieFragment nextMovieFragment) {
-
-        if(nextMovieFragment.getFragmentName().equals(Constants.TRENDING_FRAGMENT)){
-            fragmentManager.popBackStack();
-            nextMovieFragment.fragmentMovieBinding.mainContainer.setVisibility(View.VISIBLE);
+        for(Map.Entry<String,?> entry : keys.entrySet()){
+            Log.d("map values",entry.getKey() + ": " +
+                    entry.getValue().toString());
         }
-        else {
-            Log.d("transaction", "should be happening" + nextMovieFragment.getFragmentName());
-            fragmentMovieBinding.mainContainer.setVisibility(View.INVISIBLE);
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(fragmentMovieBinding.mainContainer.getId(), nextMovieFragment);
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            fragmentTransaction.addToBackStack(Constants.NOW_PLAYING_FRAGMENT);
-            fragmentTransaction.commit();
-        }
+        Log.d("check map", "onDestroy");
+        
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+//        ArrayList<Pair<Integer, Boolean>> bookmarkData = new ArrayList<Pair <Integer, Boolean>>();
+//        Map<String,?> keys = sharedPreferences.getAll();
+//
+//        for(Map.Entry<String,?> entry : keys.entrySet()){
+//            bookmarkData.add(new Pair<Integer, Boolean>(Integer.parseInt(entry.getKey()), (Boolean) entry.getValue()));
+//        }
+//        viewModel.bookMarkMovie(bookmarkData);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.clear();
+//        editor.commit();
+        Log.d("check map", "onDestroyView");
+        super.onDestroyView();
     }
 
 //    @Override

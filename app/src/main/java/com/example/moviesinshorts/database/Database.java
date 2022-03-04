@@ -10,6 +10,8 @@ import com.example.moviesinshorts.database.tables.NowPlayingMovie;
 import com.example.moviesinshorts.database.tables.TrendingMovie;
 import com.example.moviesinshorts.model.MovieModel;
 
+import java.util.List;
+
 import kotlin.jvm.Volatile;
 
 @androidx.room.Database(entities = {MovieModel.class, NowPlayingMovie.class, TrendingMovie.class}, version = 1)

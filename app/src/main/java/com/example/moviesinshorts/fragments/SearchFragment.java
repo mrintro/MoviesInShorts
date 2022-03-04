@@ -66,8 +66,6 @@ public class SearchFragment extends Fragment {
                         recyclerAdapter.setMovieModels(movieModels);
                     }
                 });
-
-
             }
         }
     };

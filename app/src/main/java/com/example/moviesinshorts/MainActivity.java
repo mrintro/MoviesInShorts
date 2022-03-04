@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.example.moviesinshorts.databinding.ActivityMainBinding;
+import com.example.moviesinshorts.fragments.BookmarkFragmentDirections;
 import com.example.moviesinshorts.fragments.HomeFragmentDirections;
 import com.example.moviesinshorts.fragments.MovieDetailFragment;
 import com.example.moviesinshorts.fragments.MovieDetailFragmentDirections;
@@ -92,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
         SearchFragmentDirections.ActionSearchFragmentToMovieDetailFragment action = SearchFragmentDirections.actionSearchFragmentToMovieDetailFragment(movie);
         action.setMovieData(movie);
         navController.navigate(action);
+    }
+
+    public void navigateToBookmarks() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+        NavController navController = navHostFragment.getNavController();
+        navController.navigate(R.id.action_homeFragment_to_bookmarkFragment);
     }
 
 //    private void initTextChangeListener() {
