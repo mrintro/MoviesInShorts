@@ -265,11 +265,12 @@ public class MovieListRepository {
             Log.d("Check get db instance",getDatabaseInstance(application).toString());
             Log.d("API Check","Checking if working1"+Constants.TRENDING_FRAGMENT);
 
-            Observable<List<MovieModel>> dataFromDb= getDatabaseInstance(application).dao().getAllTrendingMovies()
-                    .filter(movieModelList -> movieModelList.size()>0)
-                    .flatMap(movieModelList -> {
-                        return Single.just(movieModelList).toObservable();
-                    });
+            Observable<List<MovieModel>> dataFromDb = getDatabaseInstance(application).dao().getAllTrendingMovies();
+//                    .flatMap(movieModelList -> {
+//                        Log.d("Getting Response: response 1 :", String.valueOf(movieModelList.size()));
+//                        return Single.just(movieModelList).toObservable();
+//                    })
+//
 
         Log.d("checking for internet","No");
             if(NetworkHelper.checkNetwork(application)) {
@@ -283,7 +284,16 @@ public class MovieListRepository {
                     }
                 })
                 .doOnNext(movieModelList -> {
-                    database.dao().upsertTrending(movieModelList);
+                    Observable.just(database.dao().upsertTrending(movieModelList))
+                    .subscribe(response->{
+                        Log.d("Getting Response from update","update" + response);
+                    }, err ->{
+                        Log.d("Getting Response update Error", "response size = " + err.toString());
+
+                    }, ()->{
+                        Log.d("Getting Response update Message", "on Complete");
+                        observeDataFromDB(dataFromDb);
+                    });
                 });
 //                .map(movieModelList -> {
 //                    Observable.create(subscribe -> {
@@ -314,7 +324,7 @@ public class MovieListRepository {
                         },
                         () -> {
                             Log.d("Getting Response Message", "on Complete");
-                            observeDataFromDB(dataFromDb);
+//                            observeDataFromDB(dataFromDb);
                         }
                 )
         );
@@ -322,22 +332,43 @@ public class MovieListRepository {
     }
 
     private void observeDataFromDB(Observable<List<MovieModel>> dataFromDb) {
-        disposable.add(
+        Log.d("Getting Observe from data", "Funtion called");
+
             dataFromDb
-            .timeout(500, TimeUnit.MILLISECONDS)
+                    .timeout(2, TimeUnit.SECONDS)
             .onErrorResumeNext(dataFromDb)
-            .subscribeOn(Schedulers.computation())
-            .subscribe(response ->{
-                        Log.d("Getting Response DB", "response size = " + response.size());
-                        response.forEach(res -> Log.d("Getting Response : ", "Movie : " + res.getTitle() + " " + res.isBookmark() + " " + res.isTrending() + " " + res.isNowPlaying()));
-                    },
-                    error -> {
-                        Log.d("Getting Response Error", "response size = " + error.toString());
-                    },
-                    () -> {
-                        Log.d("Getting Response Message", "on Complete");
-                    })
-        );
+            .subscribeOn(Schedulers.io())
+            .subscribe(new DisposableObserver<List<MovieModel>>() {
+                           @Override
+                           public void onNext(@NonNull List<MovieModel> response) {
+                               Log.d("Getting Response DB", "response size = " + response.size());
+                               response.forEach(res -> Log.d("Getting Response from DB : ", "Movie : " + res.getTitle() + " " + res.isBookmark() + " " + res.isTrending() + " " + res.isNowPlaying()));
+                           }
+
+                           @Override
+                           public void onError(@NonNull Throwable error) {
+                               Log.d("Getting Response Error", "response size = " + error.toString());
+
+                           }
+
+                           @Override
+                           public void onComplete() {
+                               Log.d("Getting Response Message", "on Complete");
+                           }
+                       }
+
+
+//                    response -> {
+//                        Log.d("Getting Response DB", "response size = " + response.size());
+//                        response.forEach(res -> Log.d("Getting Response from DB : ", "Movie : " + res.getTitle() + " " + res.isBookmark() + " " + res.isTrending() + " " + res.isNowPlaying()));
+//                    },
+//                    error -> {
+//                        Log.d("Getting Response Error", "response size = " + error.toString());
+//                    },
+//                    () -> {
+//                        Log.d("Getting Response Message", "on Complete");
+//                    }
+                    );
     }
 
 

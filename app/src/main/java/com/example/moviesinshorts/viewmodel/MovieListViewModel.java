@@ -88,7 +88,7 @@ public class MovieListViewModel extends ViewModel {
 
     public LiveData<List<MovieModel>> getNowPlayingMovies() {
         Log.d("Check","count 1");
-        setDataFromApi();
+//        setDataFromApi();
         Log.d("Check","count 4");
         return nowPlayingMovieList;
     }

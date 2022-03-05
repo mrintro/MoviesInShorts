@@ -48,11 +48,12 @@ public abstract class Dao {
 
 
     @Transaction
-    public void upsertTrending(List<MovieModel> movieModelList){
+    public List<Long> upsertTrending(List<MovieModel> movieModelList){
         List<Long> insertResults = addMultipleMovie(movieModelList);
         for(int i=0;i<movieModelList.size();i++){
             if(insertResults.get(i)==-1) updateTrending(movieModelList.get(i).getId(), true);
         }
+        return insertResults;
     }
 
     @Query("update MovieModel set nowPlaying=:flag WHERE MovieModel.id = :id")
