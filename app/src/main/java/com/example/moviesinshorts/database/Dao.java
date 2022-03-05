@@ -1,5 +1,6 @@
 package com.example.moviesinshorts.database;
 
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.room.Insert;
@@ -18,13 +19,16 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 @androidx.room.Dao
 public abstract class Dao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    public abstract void addMovie(MovieModel movie);
+    public abstract Long addMovie(MovieModel movie);
 
     @Query("SELECT * FROM MovieModel")
     public abstract Observable<List<MovieModel>> getAllMovies();
@@ -48,24 +52,33 @@ public abstract class Dao {
 
 
     @Transaction
-    public List<Long> upsertTrending(List<MovieModel> movieModelList){
+    public void upsertTrending(List<MovieModel> movieModelList){
         List<Long> insertResults = addMultipleMovie(movieModelList);
+        Log.d("Receiving data here", "update call 1");
         for(int i=0;i<movieModelList.size();i++){
+            Log.d("Receiving data here", "update call");
             if(insertResults.get(i)==-1) updateTrending(movieModelList.get(i).getId(), true);
         }
-        return insertResults;
+    }
+
+    @Transaction
+    public void bookMarkMovie(MovieModel movie){
+        Long insert = addMovie(movie);
+        if(insert==-1){
+            bookMarkMovie(movie.getId(), movie.isBookmark());
+        }
+
     }
 
     @Query("update MovieModel set nowPlaying=:flag WHERE MovieModel.id = :id")
     public abstract void updateNowPlaying(int id, boolean flag);
 
     @Transaction
-    public List<Long> upsertNowPlaying(List<MovieModel> movieModelList){
+    public void upsertNowPlaying(List<MovieModel> movieModelList){
         List<Long> insertResults = addMultipleMovie(movieModelList);
         for(int i=0;i<movieModelList.size();i++){
             if(insertResults.get(i)==-1) updateNowPlaying(movieModelList.get(i).getId(), true);
         }
-        return insertResults;
     }
 
     @Transaction

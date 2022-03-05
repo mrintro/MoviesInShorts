@@ -34,6 +34,20 @@
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
+    <style name="buttonActiveTextStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="fontWeight">20</item>
+        <item name="font">@font/tt_commons_bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="buttonInactiveTextStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="fontWeight">15</item>
+        <item name="font">@font/tt_commons_regular</item>
+        <item name="android:textColor">@color/colorTextHintDefault</item>
+    </style>
+
     <style name="pushpa_the_">
         <item name="android:textSize">
             26sp

@@ -41,9 +41,6 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         fragmentManager = getActivity().getSupportFragmentManager();
     }
-
-
-
     
     @Nullable
     @Override
@@ -85,10 +82,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!currentFragment.equals(Constants.TRENDING_FRAGMENT)) {
-                    fragmentHomeBinding.nowPlayingButton.setTextColor(R.color.colorTextHintDefault);
-                    fragmentHomeBinding.nowPlayingButton.setText(active_now_playing);
-                    fragmentHomeBinding.trendingButton.setTextColor(R.color.black);
-                    fragmentHomeBinding.trendingButton.setText(R.string.trending);
+
+                    fragmentHomeBinding.trendingButton.setTextAppearance(R.style.buttonActiveTextStyle);
+                    fragmentHomeBinding.nowPlayingButton.setTextAppearance(R.style.buttonInactiveTextStyle);
+                    fragmentHomeBinding.trendingButton.setText(R.string.active_trending);
+                    fragmentHomeBinding.nowPlayingButton.setText(R.string.now_playing);
+
                     fragmentHomeBinding.nowPlayingMovieFragment.setVisibility(View.INVISIBLE);
                     fragmentHomeBinding.trendingMovieFragment.setVisibility(View.VISIBLE);
                     currentFragment = Constants.TRENDING_FRAGMENT;
@@ -100,10 +99,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!currentFragment.equals(Constants.NOW_PLAYING_FRAGMENT)) {
-                    fragmentHomeBinding.trendingButton.setTextColor(R.color.colorTextHintDefault);
-                    fragmentHomeBinding.trendingButton.setText(R.string.active_trending);
-                    fragmentHomeBinding.nowPlayingButton.setTextColor(R.color.black);
-                    fragmentHomeBinding.nowPlayingButton.setText(R.string.now_playing);
+                    fragmentHomeBinding.nowPlayingButton.setTextAppearance(R.style.buttonActiveTextStyle);
+                    fragmentHomeBinding.trendingButton.setTextAppearance(R.style.buttonInactiveTextStyle);
+                    fragmentHomeBinding.nowPlayingButton.setText(active_now_playing);
+                    fragmentHomeBinding.trendingButton.setText(R.string.trending);
+
                     fragmentHomeBinding.trendingMovieFragment.setVisibility(View.INVISIBLE);
                     fragmentHomeBinding.nowPlayingMovieFragment.setVisibility(View.VISIBLE);
                     currentFragment = Constants.NOW_PLAYING_FRAGMENT;

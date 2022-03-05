@@ -63,7 +63,7 @@ public class BookmarkFragment extends Fragment {
         OnMovieOnClick onMovieOnClick = new OnMovieOnClick() {
             @Override
             public void onMovieOnClick(View view, int position) {
-                ((MainActivity) getActivity()).navigateToDetails(recyclerAdapter.getMovieAtPosition(position));
+                ((MainActivity) getActivity()).navigateFromBookmarkToDetail(recyclerAdapter.getMovieAtPosition(position));
             }
         };
 

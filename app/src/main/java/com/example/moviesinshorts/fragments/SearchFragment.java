@@ -59,6 +59,7 @@ public class SearchFragment extends Fragment {
         @Override
         public void run() {
             if(System.currentTimeMillis() > lastEditTime+delay){
+                Log.d("New function here", "check data");
                 movieListViewModel.getSearchMovie(fragmentSearchBinding.searchField.getText().toString()).observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
                     @Override
                     public void onChanged(List<MovieModel> movieModels) {

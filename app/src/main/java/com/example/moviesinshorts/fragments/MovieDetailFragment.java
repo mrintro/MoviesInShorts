@@ -67,9 +67,9 @@ public class MovieDetailFragment extends Fragment {
         fragmentMovieDetailBinding.bookmarkImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                movieListViewModel.bookMarkMovie(movie.getId(), !movie.isBookmark());
                 movie.setBookmark(!movie.isBookmark());
                 configureBookmarkImage(movie.isBookmark());
+                movieListViewModel.bookMarkMovie(movie);
             }
         });
 

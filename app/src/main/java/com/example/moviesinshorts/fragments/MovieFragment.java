@@ -63,6 +63,8 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this, new MyViewModelFactory(this.getActivity().getApplication())).get(MovieListViewModel.class);
+        if(fragmentName == Constants.TRENDING_FRAGMENT) viewModel.setTrendingMovies();
+        else viewModel.setNowPlayingMovies();
 
     }
 
@@ -80,7 +82,7 @@ public class MovieFragment extends Fragment {
         Log.d("Check","onCreatecalled");
 
         if(fragmentName.equals(Constants.TRENDING_FRAGMENT)) {
-            viewModel.getTrendingMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
+            viewModel.getTrendingMovieList().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
 
                 @Override
                 public void onChanged(List<MovieModel> movieModels) {
@@ -90,7 +92,7 @@ public class MovieFragment extends Fragment {
             });
         } else if(fragmentName.equals(Constants.NOW_PLAYING_FRAGMENT)){
             Log.d("If fragment called", Constants.NOW_PLAYING_FRAGMENT);
-            viewModel.getNowPlayingMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
+            viewModel.getNowPlayingMovieList().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
 
                 @Override
                 public void onChanged(List<MovieModel> movieModels) {

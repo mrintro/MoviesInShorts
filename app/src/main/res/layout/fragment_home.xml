@@ -24,9 +24,9 @@
                 app:justifyContent="space_around"
                 >
                 <Button
+                    android:textAppearance="@style/buttonActiveTextStyle"
                     android:id="@+id/trending_button"
-                    android:fontFamily="@font/tt_commons_regular"
-                    android:textColor="#000000"
+                    style="@style/active_button_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/active_trending"
@@ -34,7 +34,9 @@
                     android:background="@color/transparent"
                     />
                 <Button
+                    android:textAppearance="@style/buttonInactiveTextStyle"
                     android:id="@+id/now_playing_button"
+                    android:fontFamily="@font/tt_commons_regular"
                     style="@style/inactive_button_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

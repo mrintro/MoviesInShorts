@@ -44,14 +44,40 @@ import retrofit2.Response;
 public class MovieListViewModel extends ViewModel {
 
     private MovieListRepository movieListRepository;
-    private final MutableLiveData<List<MovieModel>> nowPlayingMovieList = new MutableLiveData<List<MovieModel>>();
-    private final MutableLiveData<List<MovieModel>> trendingMovieList = new MutableLiveData<List<MovieModel>>();
-    private final MutableLiveData<List<MovieModel>> searchMovieList = new MutableLiveData<List<MovieModel>>();
-    private final MutableLiveData<List<MovieModel>> bookMarkedMovie = new MutableLiveData<List<MovieModel>>();
+    private MutableLiveData<List<MovieModel>> nowPlayingMovieList = new MutableLiveData<List<MovieModel>>();
+    private MutableLiveData<List<MovieModel>> trendingMovieList = new MutableLiveData<List<MovieModel>>();
+    private MutableLiveData<List<MovieModel>> searchMovieList = new MutableLiveData<List<MovieModel>>();
+    private MutableLiveData<List<MovieModel>> bookMarkedMovie = new MutableLiveData<List<MovieModel>>();
     private Application application;
-
     private SharedPreferences sharedPreferences;
     private CompositeDisposable disposable = new CompositeDisposable();
+
+    public void setNowPlayingMovieList() {
+        this.nowPlayingMovieList = movieListRepository.getNowPlayingMovieList();
+    }
+
+    public void setTrendingMovieList() {
+        this.trendingMovieList = movieListRepository.getTrendingMovieList();
+    }
+
+    public LiveData<List<MovieModel>> getNowPlayingMovieList() {
+        setNowPlayingMovieList();
+        return nowPlayingMovieList;
+    }
+
+    public LiveData<List<MovieModel>> getTrendingMovieList() {
+        setTrendingMovieList();
+        return trendingMovieList;
+    }
+
+    public LiveData<List<MovieModel>> getSearchMovieList() {
+        return searchMovieList;
+    }
+
+    public LiveData<List<MovieModel>> getBookMarkedMovie() {
+        return bookMarkedMovie;
+    }
+
 
     public MovieListViewModel(Application application){
         movieListRepository = MovieListRepository.getMovieListRepositoryInstance(application);
@@ -59,107 +85,15 @@ public class MovieListViewModel extends ViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public LiveData<List<MovieModel>> getTrendingMovies(){
-//        Log.d("Check","Check Result Api");
-//        disposable.add(movieListRepository.getTrendingMovie()
-//                .timeout(100, TimeUnit.MILLISECONDS)
-//                .onErrorResumeNext()
-//                .subscribe(movieModelList -> {
-//
-//                Log.d("checking where the data is comming from", "data");
-//                for(MovieModel movie : movieModelList){
-//                    Log.d("check movie", movie.getTitle()+movie.isBookmark());
-//                }
-//
-//                Log.d("Check","checking subscribe api1");
-//                trendingMovieList.postValue(movieModelList);
-//            },
-//            err->{
-//                Log.d("View Model", "Error Fetching trending movies");
-//            }, () -> {
-//              Log.d("View Model", "Fetched trending movies");
-//            }
-//            )
-//        );
+    public void setTrendingMovies() {
+        Log.d("Receiving Data", "Data ");
         movieListRepository.getTrendingMovie();
-        return trendingMovieList;
     }
 
 
-    public LiveData<List<MovieModel>> getNowPlayingMovies() {
-        Log.d("Check","count 1");
-//        setDataFromApi();
-        Log.d("Check","count 4");
-        return nowPlayingMovieList;
+    public void setNowPlayingMovies() {
+        movieListRepository.getNowPlayingMovie();
     }
-
-    public void setDataFromApi() {
-        movieListRepository.getDataFromApi();
-        Log.d("Check","count 2");
-        callRepositoryFunction();
-
-
-    }
-
-    private void callRepositoryFunction() {
-        movieListRepository.setDataFromApi()
-                .subscribe(new DisposableObserver<List<MovieModel>>() {
-                    @Override
-                    public void onNext(@NonNull List<MovieModel> movieModelList) {
-                        Log.d("Check On Next Called","count "+movieModelList.size() );
-                        if(movieModelList.size()==0) callRepositoryFunction();
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        Log.d("Check Upsert Failure", "Error "+e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d("Check Upsert complete", "complete ");
-                    }
-                });
-
-
-//
-//                .subscribe(new DisposableSubscriber<List<MovieModel>>() {
-//                    @Override
-//                    public void onNext(List<MovieModel> movieModelList) {
-//                        Log.d("Check On Next Called","count "+movieModelList.size() );
-//                            callRepositoryFunction();
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable t) {
-//                        Log.d("Check Upsert Failure", "Error "+t.toString());
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//                        Log.d("Check Upsert complete", "Error ");
-//                    }
-//                });
-    }
-
-
-//
-//    @SuppressLint("CheckResult")
-//    public LiveData<List<MovieModel>> getNowPlayingMovies(){
-//        Log.d("Check","Check Result Api");
-//        Disposable s = movieListRepository.getNowPlayingMovies().subscribe(responseModel -> {
-//            Log.d("View Model","checking subscribe api2 "+responseModel.isDb()+" "+responseModel.getMovieModels().size());
-//            if(responseModel.isDb() && responseModel.getMovieModels().size()>0) nowPlayingMovieList.postValue(responseModel.getMovieModels());
-////            else if(responseModel.getMovieModels().size()==0){
-////                getNowPlayingMovies();
-////            }
-//        },onError -> {
-//            Log.d("View Model", "Error Fetching trending movies");
-//        }, () -> {
-//            Log.d("View Model", "Fetched trending movies");
-//        });
-//        return nowPlayingMovieList;
-//    }
 
     @SuppressLint("CheckResult")
     public LiveData<List<MovieModel>> getSearchMovie(String searchText){
@@ -169,14 +103,14 @@ public class MovieListViewModel extends ViewModel {
         return searchMovieList;
     }
 
-
-
-    public void bookMarkMovies(ArrayList<Pair<Integer, Boolean>> bookmarkData) {
-        movieListRepository.bookMarkMovies(bookmarkData);
-    }
     public void bookMarkMovie(int id, boolean flag) {
         movieListRepository.bookMarkMovie(id, flag);
     }
+
+    public void bookMarkMovie(MovieModel movieModel){
+        movieListRepository.bookMarkMovie(movieModel);
+    }
+
 
     @SuppressLint("CheckResult")
     public LiveData<List<MovieModel>> getBookMarkedMovies(){
