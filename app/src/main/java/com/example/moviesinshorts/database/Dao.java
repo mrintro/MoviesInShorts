@@ -18,6 +18,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @androidx.room.Dao
 public abstract class Dao {
@@ -33,7 +34,7 @@ public abstract class Dao {
     public abstract  Observable<List<MovieModel>> getAllTrendingMovies();
 
     @Query("SELECT * FROM MovieModel where MovieModel.nowPlaying=1")
-    public abstract  Observable<List<MovieModel>> getAllNowPlayingMovies();
+    public abstract Observable<List<MovieModel>> getAllNowPlayingMovies();
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -58,11 +59,12 @@ public abstract class Dao {
     public abstract void updateNowPlaying(int id, boolean flag);
 
     @Transaction
-    public void upsertNowPlaying(List<MovieModel> movieModelList){
+    public List<Long> upsertNowPlaying(List<MovieModel> movieModelList){
         List<Long> insertResults = addMultipleMovie(movieModelList);
         for(int i=0;i<movieModelList.size();i++){
             if(insertResults.get(i)==-1) updateNowPlaying(movieModelList.get(i).getId(), true);
         }
+        return insertResults;
     }
 
     @Transaction

@@ -22,12 +22,18 @@ import com.example.moviesinshorts.utils.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import kotlinx.coroutines.flow.Flow;
 
 public class MovieListRepository {
 
@@ -37,8 +43,85 @@ public class MovieListRepository {
     private TrendingApi trendingApi;
     private SearchQueryApi searchQueryApi;
     private Application application;
+    private CompositeDisposable disposable = new CompositeDisposable();
+
 
     private static Database database;
+
+    public Observable<List<MovieModel>> setDataFromApi() {
+        Log.d("Check","count 3");
+        return getDatabaseInstance(application).dao().getAllNowPlayingMovies()
+//                .flatMap(response -> {
+//                     getDataFromApi();
+//                    return Flowable.just(response);
+//                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread());
+
+
+
+//        return getNowPlayingApi().getMovieList()
+//                .  map(movieListResponse -> {
+//                    return Observable.just(getDatabaseInstance(application).dao().upsertNowPlaying(movieListResponse.getMovieList()))
+//                            .subscribe(new DisposableObserver<List<Long>>() {
+//                                @Override
+//                                public void onNext(@NonNull List<Long> longs) {
+//                                    Log.d("Checking if updated", "data upsert going on");
+//                                }
+//
+//                                @Override
+//                                public void onError(@NonNull Throwable e) {
+//                                    Log.d("Upsert Failure", "Error "+e.toString());
+//                                }
+//
+//                                @Override
+//                                public void onComplete() {
+//
+//                                }
+//                            })
+
+//                });
+
+    }
+
+    public void getDataFromApi() {
+        getNowPlayingApi().getMovieList()
+                .subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<MovieListResponse>() {
+            @Override
+            public void onNext(@NonNull MovieListResponse movieListResponse) {
+                Observable.just(getDatabaseInstance(application).dao().upsertNowPlaying(movieListResponse.getMovieList()))
+                .subscribeOn(Schedulers.computation())
+                .subscribe(new DisposableObserver<List<Long>>() {
+                    @Override
+                    public void onNext(@NonNull List<Long> longs) {
+                        Log.d("Check Upsert Done", "Done ");
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.d("Check Upsert Failure", "Error "+e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("Check Upsert Complete", "Error ");
+                    }
+                });
+                Log.d("Check Upsert Done", "Done ");
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.d("Check Upsert Failure", "Error "+e.toString());
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
 
 
     private NowPlayingApi getNowPlayingApi() {
@@ -73,106 +156,120 @@ public class MovieListRepository {
 
 
     // New Method
-    @SuppressLint("CheckResult")
-    List<MovieModel> getDataFromDB() {
-        getDatabaseInstance(application).dao().getAllNowPlayingMovies()
-                .subscribe(movieModelListRes -> {
-                    movieModelList.set(movieModelListRes);
-                });
-    }
+//    @SuppressLint("CheckResult")
+//    List<MovieModel> getDataFromDB() {
+//        getDatabaseInstance(application).dao().getAllNowPlayingMovies()
+//                .subscribe(movieModelListRes -> {
+//                    movieModelList.set(movieModelListRes);
+//                });
+//    }
 
 
-    Observable<List<MovieModel>> getDataFromApi(){
-        Observable<MovieResponse> movieFromApi = getNowPlayingApi().getMovieList()
-                .subscribeOn(Schedulers.io())
-                .doOnNext(movieListResponse -> {
-                    getDatabaseInstance(application).dao().upsertNowPlaying(movieListResponse.getMovieList());
-                }).subscribeOn(Schedulers.computation())
-                .map(new Function<MovieListResponse, List<MovieModel>>() {
-                    @Override
-                    public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
-                        return getDataFromDB();
-                    }
-                })
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @SuppressLint("CheckResult")
-    public Observable<ResponseModel> getNowPlayingMovies(){
-        Log.d("API Check","Checking if working1"+Constants.NOW_PLAYING_FRAGMENT);
-        Observable<ResponseModel> dataFromDb= getDatabaseInstance(application).dao().getAllNowPlayingMovies()
-                .map(new Function<List<MovieModel>, ResponseModel>() {
-                    @Override
-                    public ResponseModel apply(@NonNull List<MovieModel> movieModelList) throws Exception {
-                        return new ResponseModel(true, movieModelList);
-                    }
-                })
-                .subscribeOn(Schedulers.computation());
-
-        if(NetworkHelper.checkNetwork(application)) {
-            Observable<ResponseModel> dataFromApi = getNowPlayingApi().getMovieList()
-                    .map(new Function<MovieListResponse, ResponseModel>() {
-                @Override
-                public ResponseModel apply(@NonNull MovieListResponse movieListResponse) throws Exception {
-                    Log.d("checking", "check map");
-                    return new ResponseModel(false, movieListResponse.getMovieList());
-                }
-            })
-            .map(responseModel -> {
-                Observable.create(subscribe -> {
-                    database.dao().upsertNowPlaying(responseModel.getMovieModels());
-                    Log.d("Putting data into db","check");
-                }).subscribeOn(Schedulers.computation()).subscribe();
-                return responseModel;
-            })
-            .subscribeOn(Schedulers.io());
-//            Log.d("check data", "check" + dataFromApi.toString());
-
-//            Observable<List<MovieModel>> dataFromApi = getNowPlayingApi().getMovieList()
-//                    .map(movieListResponse -> {
-//                        return getDatabaseInstance(application).dao().setAndGetData(movieListResponse.getMovieList());
+//    private Flowable<List<MovieModel>> getNowPlayingMovies(){
+//        return getDatabaseInstance(application).dao().getAllNowPlayingMovies()
+//                .flatMap(movieModelList -> {
+//                    getNowPlayingApi().getMovieList()
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe(new DisposableObserver<MovieListResponse>() {
+//                        @Override
+//                        public void onNext(@NonNull MovieListResponse movieListResponse) {
+//                            getDatabaseInstance(application).dao().upsertNowPlaying(movieListResponse.getMovieList());
+//                        }
+//
+//                        @Override
+//                        public void onError(@NonNull Throwable e) {
+//                            Log.e("Error Getting Data From API", e.toString());
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//
+//                        }
 //                    });
+//                    return Flowable.just()
+//                });
+//
+//    }
 
-            return Observable.merge(dataFromApi, dataFromDb).observeOn(AndroidSchedulers.mainThread());
-        } else {
-            return dataFromDb.observeOn(AndroidSchedulers.mainThread());
-        }
-    }
 
-    public Observable<List<MovieModel>> getTrendingMovie(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    @SuppressLint("CheckResult")
+//    public Observable<ResponseModel> getNowPlayingMovies(){
+//        Log.d("API Check","Checking if working1"+Constants.NOW_PLAYING_FRAGMENT);
+//        Observable<ResponseModel> dataFromDb= getDatabaseInstance(application).dao().getAllNowPlayingMovies()
+//                .map(new Function<List<MovieModel>, ResponseModel>() {
+//                    @Override
+//                    public ResponseModel apply(@NonNull List<MovieModel> movieModelList) throws Exception {
+//                        return new ResponseModel(true, movieModelList);
+//                    }
+//                })
+//                .subscribeOn(Schedulers.computation());
+//
+//        if(NetworkHelper.checkNetwork(application)) {
+//            Observable<ResponseModel> dataFromApi = getNowPlayingApi().getMovieList()
+//                    .map(new Function<MovieListResponse, ResponseModel>() {
+//                @Override
+//                public ResponseModel apply(@NonNull MovieListResponse movieListResponse) throws Exception {
+//                    Log.d("checking", "check map");
+//                    return new ResponseModel(false, movieListResponse.getMovieList());
+//                }
+//            })
+//            .map(responseModel -> {
+//                Observable.create(subscribe -> {
+//                    database.dao().upsertNowPlaying(responseModel.getMovieModels());
+//                    Log.d("Putting data into db","check");
+//                }).subscribeOn(Schedulers.computation()).subscribe();
+//                return responseModel;
+//            })
+//            .subscribeOn(Schedulers.io());
+////            Log.d("check data", "check" + dataFromApi.toString());
+//
+////            Observable<List<MovieModel>> dataFromApi = getNowPlayingApi().getMovieList()
+////                    .map(movieListResponse -> {
+////                        return getDatabaseInstance(application).dao().setAndGetData(movieListResponse.getMovieList());
+////                    });
+//
+//            return Observable.merge(dataFromApi, dataFromDb).observeOn(AndroidSchedulers.mainThread());
+//        } else {
+//            return dataFromDb.observeOn(AndroidSchedulers.mainThread());
+//        }
+//    }
+
+    public void getTrendingMovie(){
             Log.d("Check get db instance",getDatabaseInstance(application).toString());
             Log.d("API Check","Checking if working1"+Constants.TRENDING_FRAGMENT);
 
             Observable<List<MovieModel>> dataFromDb= getDatabaseInstance(application).dao().getAllTrendingMovies()
                     .filter(movieModelList -> movieModelList.size()>0)
-                    .subscribeOn(Schedulers.computation());
+                    .flatMap(movieModelList -> {
+                        return Single.just(movieModelList).toObservable();
+                    });
 
         Log.d("checking for internet","No");
             if(NetworkHelper.checkNetwork(application)) {
@@ -185,22 +282,63 @@ public class MovieListRepository {
                         return movieListResponse.getMovieList();
                     }
                 })
-                        .map(movieModelList -> {
-                            Observable.create(subscribe -> {
-                                Log.d("Putting data into db","check");
-                                database.dao().upsertTrending(movieModelList);
-                                subscribe.onComplete();
-                            }).subscribeOn(Schedulers.computation()).subscribe();
-                            return movieModelList;
-                        })
-                        .subscribeOn(Schedulers.io());
+                .doOnNext(movieModelList -> {
+                    database.dao().upsertTrending(movieModelList);
+                });
+//                .map(movieModelList -> {
+//                    Observable.create(subscribe -> {
+//                        Log.d("Putting data into db","check");
+//                        database.dao().upsertTrending(movieModelList);
+//                        subscribe.onComplete();
+//                    }).subscribeOn(Schedulers.computation()).subscribe();
+//                    return movieModelList;
+//                })
                 Log.d("check data", "check" + dataFromDb.toString());
-                return Observable.concat(dataFromDb.observeOn(AndroidSchedulers.mainThread()), dataFromApi.observeOn(AndroidSchedulers.mainThread()));
-            } else {
-                return dataFromDb.observeOn(AndroidSchedulers.mainThread());
+
+                observeData(dataFromDb, dataFromApi);
             }
     }
 
+    private void observeData(Observable<List<MovieModel>> dataFromDb, Observable<List<MovieModel>> dataFromApi) {
+        disposable.add(
+                dataFromApi
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        response ->{
+                            Log.d("Getting Response", "response size = " + response.size());
+                            response.forEach(res -> Log.d("Getting Response : ", "Movie : " + res.getTitle() + " " + res.isBookmark() + " " + res.isTrending() + " " + res.isNowPlaying()));
+                        },
+                        error -> {
+                            Log.d("Getting Response Error", "response size = " + error.toString());
+                            observeDataFromDB(dataFromDb);
+                        },
+                        () -> {
+                            Log.d("Getting Response Message", "on Complete");
+                            observeDataFromDB(dataFromDb);
+                        }
+                )
+        );
+
+    }
+
+    private void observeDataFromDB(Observable<List<MovieModel>> dataFromDb) {
+        disposable.add(
+            dataFromDb
+            .timeout(500, TimeUnit.MILLISECONDS)
+            .onErrorResumeNext(dataFromDb)
+            .subscribeOn(Schedulers.computation())
+            .subscribe(response ->{
+                        Log.d("Getting Response DB", "response size = " + response.size());
+                        response.forEach(res -> Log.d("Getting Response : ", "Movie : " + res.getTitle() + " " + res.isBookmark() + " " + res.isTrending() + " " + res.isNowPlaying()));
+                    },
+                    error -> {
+                        Log.d("Getting Response Error", "response size = " + error.toString());
+                    },
+                    () -> {
+                        Log.d("Getting Response Message", "on Complete");
+                    })
+        );
+    }
 
 
     public Observable<List<MovieModel>> getSearchMovie(String searchText) {
