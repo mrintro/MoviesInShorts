@@ -1,43 +1,31 @@
 package com.example.moviesinshorts.repository;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.moviesinshorts.database.Database;
-import com.example.moviesinshorts.database.tables.Movie;
 import com.example.moviesinshorts.model.MovieModel;
-import com.example.moviesinshorts.model.ResponseModel;
 import com.example.moviesinshorts.network.NowPlayingApi;
 import com.example.moviesinshorts.network.RetroInstance;
 import com.example.moviesinshorts.network.SearchQueryApi;
 import com.example.moviesinshorts.network.TrendingApi;
 import com.example.moviesinshorts.response.MovieListResponse;
-import com.example.moviesinshorts.response.MovieResponse;
 import com.example.moviesinshorts.utils.Constants;
 import com.example.moviesinshorts.utils.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function;
-import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.observers.DisposableObserver;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import kotlinx.coroutines.flow.Flow;
 
 public class MovieListRepository {
 
@@ -45,7 +33,7 @@ public class MovieListRepository {
     private NowPlayingApi nowPlayingApi;
     private TrendingApi trendingApi;
     private SearchQueryApi searchQueryApi;
-    private Application application;
+    private final Application application;
     private CompositeDisposable disposable = new CompositeDisposable();
     private static Database database;
 
@@ -96,68 +84,76 @@ public class MovieListRepository {
 
 
     public void getTrendingMovie() {
-        getTrendingApi().getMovieList()
-                .map(new Function<MovieListResponse, List<MovieModel>>() {
-                    @Override
-                    public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
-                        for (MovieModel movieModel : movieListResponse.getMovieList())
-                            movieModel.setTrending(true);
-                        return  movieListResponse.getMovieList();
-                    }
-                }).doOnNext(movieModelList -> {
-            Log.d("Receiving data here", "update call 3");
-            getDatabaseInstance(application).dao().upsertTrending(movieModelList);
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableObserver<List<MovieModel>>() {
-                    @Override
-                    public void onNext(@NonNull List<MovieModel> movieModelList) {
+        if(NetworkHelper.checkNetwork(application)) {
+            getTrendingApi().getMovieList()
+                    .map(new Function<MovieListResponse, List<MovieModel>>() {
+                        @Override
+                        public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
+                            for (MovieModel movieModel : movieListResponse.getMovieList())
+                                movieModel.setTrending(true);
+                            return movieListResponse.getMovieList();
+                        }
+                    }).doOnNext(movieModelList -> {
+                Log.d("Receiving data here", "update call 3");
+                getDatabaseInstance(application).dao().upsertTrending(movieModelList);
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableObserver<List<MovieModel>>() {
+                        @Override
+                        public void onNext(@NonNull List<MovieModel> movieModelList) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
+                        @Override
+                        public void onError(@NonNull Throwable e) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        observeDataFromDB(Constants.TRENDING_FRAGMENT);
-                    }
-                });
-
+                        @Override
+                        public void onComplete() {
+                            observeDataFromDB(Constants.TRENDING_FRAGMENT);
+                        }
+                    });
+        } else{
+            observeDataFromDB(Constants.TRENDING_FRAGMENT);
+        }
     }
 
     public void getNowPlayingMovie() {
-        getNowPlayingApi().getMovieList()
-                .map(new Function<MovieListResponse, List<MovieModel>>() {
-                    @Override
-                    public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
-                        for (MovieModel movieModel : movieListResponse.getMovieList())
-                            movieModel.setNowPlaying(true);
-                        return  movieListResponse.getMovieList();
-                    }
-                }).doOnNext(movieModelList -> {
-            Log.d("Receiving data here", "update call 3");
-            getDatabaseInstance(application).dao().upsertNowPlaying(movieModelList);
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableObserver<List<MovieModel>>() {
-                    @Override
-                    public void onNext(@NonNull List<MovieModel> movieModelList) {
+        if(NetworkHelper.checkNetwork(application)){
+            getNowPlayingApi().getMovieList()
+                    .map(new Function<MovieListResponse, List<MovieModel>>() {
+                        @Override
+                        public List<MovieModel> apply(@NonNull MovieListResponse movieListResponse) throws Exception {
+                            for (MovieModel movieModel : movieListResponse.getMovieList())
+                                movieModel.setNowPlaying(true);
+                            return movieListResponse.getMovieList();
+                        }
+                    }).doOnNext(movieModelList -> {
+                Log.d("Receiving data here", "update call 3");
+                getDatabaseInstance(application).dao().upsertNowPlaying(movieModelList);
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableObserver<List<MovieModel>>() {
+                        @Override
+                        public void onNext(@NonNull List<MovieModel> movieModelList) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
+                        @Override
+                        public void onError(@NonNull Throwable e) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        observeDataFromDB(Constants.NOW_PLAYING_FRAGMENT);
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+                            observeDataFromDB(Constants.NOW_PLAYING_FRAGMENT);
+                        }
+                    });
+        }
+        else{
+            observeDataFromDB(Constants.NOW_PLAYING_FRAGMENT);
+        }
 
     }
 
@@ -203,10 +199,6 @@ public class MovieListRepository {
                 }).subscribeOn(Schedulers.io());
 
         return searchFromApi;
-    }
-
-    public void bookMarkMovies(ArrayList<Pair<Integer, Boolean>> bookmarkData){
-        getDatabaseInstance(application).dao().bookMarkMultipleMovie(bookmarkData);
     }
     public void bookMarkMovie(int id, boolean flag){
         getDatabaseInstance(application).dao().bookMarkMovie(id, flag);

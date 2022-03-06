@@ -93,6 +93,7 @@ public class MovieDetailFragment extends Fragment {
         fragmentMovieDetailBinding.mainContainer.setVisibility(View.VISIBLE);
         Glide.with(requireContext())
                 .load("https://image.tmdb.org/t/p/w500/"+movie.getPoster_path())
+                .error(R.drawable.image_not_found)
                 .into(fragmentMovieDetailBinding.detailImage);
     }
 }
