@@ -79,7 +79,7 @@ public class MovieFragment extends Fragment {
         setViewPagerAdapter();
         setUpBookmarkButton();
 
-        Log.d("Check","onCreatecalled");
+        Log.d("Check","onCreateCalled");
 
         if(fragmentName.equals(Constants.TRENDING_FRAGMENT)) {
             viewModel.getTrendingMovieList().observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
@@ -142,7 +142,6 @@ public class MovieFragment extends Fragment {
             public void onMovieOnClick(View view, int position) {
                 MovieDetailFragment movieDetailFragment = new MovieDetailFragment(sliderAdapter.getMovieAtPosition(position));
 //                ((MainActivity)getActivity()).changeToDetailFragment(movieDetailFragment);
-                Log.d("Ayush", "MV" + sliderAdapter.getMovieAtPosition(position).toString());
                 ((MainActivity) getActivity()).navigateToDetailFragment(sliderAdapter.getMovieAtPosition(position));
                 Log.d("Listener check", "listening to "+ String.valueOf(position));
             }
@@ -186,9 +185,9 @@ public class MovieFragment extends Fragment {
 
                 MovieModel movie = sliderAdapter.getMovieModel(position);
                 fragmentMovieBinding.movieTitle.setText(movie.getTitle());
-
                 Glide.with(requireContext())
                         .load("https://image.tmdb.org/t/p/w500/"+movie.getBackdrop_path())
+                        .error(R.drawable.image_not_found)
                         .into(fragmentMovieBinding.backgroundImage);
                 fragmentMovieBinding.imdbText.setText(String.valueOf(movie.getVote_average()));
 

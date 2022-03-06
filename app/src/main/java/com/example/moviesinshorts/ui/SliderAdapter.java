@@ -56,12 +56,6 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
             editor.putBoolean(String.valueOf(movieModels.get(position).getId()), !currStatus);
             editor.commit();
             movieListViewModel.bookMarkMovie(movieModels.get(position).getId(), !currStatus);
-//            ImageView v = (ImageView) view;
-//            if(currStatus){
-//                v.setImageResource(R.drawable.bookmark_white);
-//            }else {
-//                v.setImageResource(R.drawable.bookmark_red);
-//            }
         }
     };
 
@@ -128,24 +122,10 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
         Log.d("Checking on bind view holder", String.valueOf(position));
 
-        if(NetworkHelper.checkNetwork(holder.itemView.getContext())) {
             Glide.with(holder.itemView.getContext())
                     .load("https://image.tmdb.org/t/p/w500/" + movieModels.get(position).getPoster_path())
+                    .error(R.drawable.image_not_found)
                     .into((holder).imageView);
-        } else {
-            Glide.with(holder.itemView.getContext())
-                    .load(R.drawable.ic_launcher_foreground)
-                    .into(holder.imageView);
-
-        }
-
-//        boolean currState = sharedPreferences.getBoolean(String.valueOf(movieModels.get(position).getId()),false);
-//        Log.d("check","Checking curr state"+currState);
-//        if(currState){
-//            holder.bookmarkImage.setImageResource(R.drawable.bookmark_red);
-//        } else {
-//            holder.bookmarkImage.setImageResource(R.drawable.bookmark_white);
-//        }
         if(movieModels.get(position).isBookmark()){
             holder.bookmarkImage.setImageResource(R.drawable.bookmark_red);
         }else {

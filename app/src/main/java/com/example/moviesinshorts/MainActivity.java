@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
     public void navigateToDetailFragment(MovieModel movie ) {
         NavHostFragment navHostFragment =  (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
         NavController navController = navHostFragment.getNavController();
-        Log.d("Ayush", "Ayush " + movie.getTitle());
         HomeFragmentDirections.ActionHomeFragmentToMovieDetailFragment action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie);
         action.setMovieData(movie);
         navController.navigate(action);
@@ -113,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
                 NavHostFragment navHostFragment =  (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
                 NavController navController = navHostFragment.getNavController();
-               Log.d("Ayush", "Ayush " +  navController.getCurrentDestination().getDisplayName());
                if (navController.getCurrentDestination().getDisplayName().equals("com.example.moviesinshorts:id/homeFragment"))
                 navController.navigate(R.id.action_homeFragment_to_searchFragment);
                else

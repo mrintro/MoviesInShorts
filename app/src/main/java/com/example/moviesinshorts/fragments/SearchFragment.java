@@ -7,102 +7,72 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import com.example.moviesinshorts.MainActivity;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentSearchBinding;
-import com.example.moviesinshorts.model.MovieModel;
-import com.example.moviesinshorts.repository.MovieListRepository;
 import com.example.moviesinshorts.ui.RecyclerAdapter;
-import com.example.moviesinshorts.ui.SliderAdapter;
 import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
 import com.example.moviesinshorts.viewmodel.MyViewModelFactory;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-import java.util.List;
-
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 public class SearchFragment extends Fragment {
 
-    @NotNull
-    private Handler handler;
     FragmentSearchBinding fragmentSearchBinding;
     private MovieListViewModel movieListViewModel;
     private RecyclerAdapter recyclerAdapter;
-    private long lastEditTime;
-    private final long delay = 500;
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     public SearchFragment() {
     }
 
-    private final Runnable handleUserType = new Runnable() {
-        @Override
-        public void run() {
-            if(System.currentTimeMillis() > lastEditTime+delay){
-                Log.d("New function here", "check data");
-                movieListViewModel.getSearchMovie(fragmentSearchBinding.searchField.getText().toString()).observe(getViewLifecycleOwner(), new Observer<List<MovieModel>>() {
-                    @Override
-                    public void onChanged(List<MovieModel> movieModels) {
-                        Log.d("New data here", "check data");
-                        recyclerAdapter.setMovieModels(movieModels);
-                    }
-                });
-            }
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movieListViewModel = new ViewModelProvider(this, new MyViewModelFactory(this.getActivity().getApplication())).get(MovieListViewModel.class);
+        movieListViewModel = new ViewModelProvider(this, new MyViewModelFactory(Objects.requireNonNull(this.getActivity()).getApplication())).get(MovieListViewModel.class);
 
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentSearchBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
 
         View view = fragmentSearchBinding.getRoot();
         view.setY(0);
         view.setX(0);
-        handler = new Handler();
         initHandleUserText();
-        setUpRecyclerAdapter(view);
+        setUpRecyclerAdapter();
         return view;
     }
 
 
 
-    private void setUpRecyclerAdapter(View view) {
+    private void setUpRecyclerAdapter() {
 
-        OnMovieOnClick onMovieOnClick = new OnMovieOnClick() {
-            @Override
-            public void onMovieOnClick(View view, int position) {
-                ((MainActivity) getActivity()).navigateToDetails(recyclerAdapter.getMovieAtPosition(position));
-            }
-        };
+        OnMovieOnClick onMovieOnClick = (view, position) -> ((MainActivity) Objects.requireNonNull(getActivity())).navigateToDetails(recyclerAdapter.getMovieAtPosition(position));
 
         RecyclerView recyclerView = fragmentSearchBinding.searchList;
         recyclerAdapter = new RecyclerAdapter(recyclerView, onMovieOnClick);
@@ -117,6 +87,7 @@ public class SearchFragment extends Fragment {
         initFocus();
     }
 
+
     private void initFocus() {
         Log.d("Focus Check","checking textview focus");
         fragmentSearchBinding.searchField.requestFocus();
@@ -126,7 +97,7 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if(getActivity().getCurrentFocus()!=null) {
+        if(Objects.requireNonNull(getActivity()).getCurrentFocus()!=null) {
             final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
         }
@@ -139,26 +110,61 @@ public class SearchFragment extends Fragment {
         super.onResume();
     }
 
+    @Override
+    public void onDestroy(){
+        disposable.clear();
+        super.onDestroy();
+    }
+
     private void initHandleUserText() {
-        fragmentSearchBinding.searchField.addTextChangedListener(new TextWatcher() {
+
+        Observable<String> observableStringQuery = Observable.create(
+                (ObservableOnSubscribe<String>) emitter -> fragmentSearchBinding.searchField.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        Log.d("Search for string ", "After Text Change called " + s.toString() );
+                        emitter.onNext(fragmentSearchBinding.searchField.getText().toString());
+                    }
+                })
+        ).debounce(500, TimeUnit.MILLISECONDS)
+                .filter(s -> !s.isEmpty())
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        observableStringQuery.subscribe(new io.reactivex.Observer<String>() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onSubscribe(@NonNull Disposable d) {
+                disposable.add(d);
+            }
+
+            @Override
+            public void onNext(@NonNull String s) {
+                Log.d("Search for String :", s);
+                movieListViewModel.getSearchMovie(fragmentSearchBinding.searchField.getText().toString()).observe(getViewLifecycleOwner(), movieModels -> {
+                    Log.d("New data here", "check data");
+                    recyclerAdapter.setMovieModels(movieModels);
+                });
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                handler.removeCallbacks(handleUserType);
-            }
+            public void onComplete() {
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
-                    lastEditTime = System.currentTimeMillis();
-                    handler.postDelayed(handleUserType, delay);
-                }
             }
         });
     }
-
 }

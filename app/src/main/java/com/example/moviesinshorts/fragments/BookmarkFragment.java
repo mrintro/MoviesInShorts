@@ -55,10 +55,10 @@ public class BookmarkFragment extends Fragment {
                 recyclerAdapter.setMovieModels(movieModelList);
             }
         });
-        setUpRecyclerAdapter(view);
+        setUpRecyclerAdapter();
         return view;
     }
-    private void setUpRecyclerAdapter(View view) {
+    private void setUpRecyclerAdapter() {
 
         OnMovieOnClick onMovieOnClick = new OnMovieOnClick() {
             @Override
