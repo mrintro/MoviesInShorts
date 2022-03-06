@@ -97,6 +97,15 @@ public class MainActivity extends AppCompatActivity {
         navController.navigate(R.id.action_homeFragment_to_bookmarkFragment);
     }
 
+    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+
+//    @Override
+//    public void onBackPressed() {
+//        int count = getSupportFragmentManager().getBackStackEntryCount();
+//        Log.d("On Back Pressed ", "checking "+navHostFragment.getNavController().getCurrentBackStackEntry());
+////        super.onBackPressed();
+//    }
+
     private void setUpSearchButton() {
         binding.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override

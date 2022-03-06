@@ -107,6 +107,12 @@ public class MovieFragment extends Fragment {
 
 
     private void setUpBookmarkButton() {
+        fragmentMovieBinding.bookmarkText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).navigateToBookmarks();
+            }
+        });
 
         fragmentMovieBinding.bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override

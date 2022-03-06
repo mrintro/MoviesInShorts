@@ -16,28 +16,43 @@
 
     <style name="headingMainViewPager">
         <item name="android:paddingLeft">4sp</item>
-        <item name="font">@font/tt_commons_bold</item>
+        <item name="android:fontFamily">@font/tt_commons_bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
+
+    <style name="headingDetail">
+        <item name="android:paddingLeft">4sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textColor">@color/colorTextDefault</item>
+    </style>
+
     <style name="search_heading">
         <item name="android:paddingLeft">4sp</item>
-        <item name="font">@font/tt_commons_bold</item>
+        <item name="android:fontFamily">@font/tt_commons_bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
     <style name="other_data">
         <item name="android:paddingLeft">4sp</item>
-        <item name="font">@font/tt_commons_bold</item>
+        <item name="android:fontFamily">@font/tt_commons_bold</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorTextDefault</item>
+    </style>
+
+    <style name="other_detail_data">
+        <item name="android:paddingLeft">4sp</item>
+        <item name="android:fontFamily">@font/gafata_regular</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
     <style name="buttonActiveTextStyle">
         <item name="android:textSize">20sp</item>
         <item name="fontWeight">20</item>
-        <item name="font">@font/tt_commons_bold</item>
+        <item name="android:fontFamily">@font/tt_commons_bold</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
@@ -46,6 +61,12 @@
         <item name="fontWeight">15</item>
         <item name="font">@font/tt_commons_regular</item>
         <item name="android:textColor">@color/colorTextHintDefault</item>
+    </style>
+
+    <style name="buttonStyle" parent="@android:style/Widget.Button.Small">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="pushpa_the_">

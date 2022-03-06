@@ -4,10 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable-v24/bookmark_red.xml" value="0.21770833333333334" />
+        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/bookmark_white.xml" value="0.2265625" />
+        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/buttom.xml" value="0.20052083333333334" />
+        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/button.xml" value="0.31296296296296294" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/ic_bookmark_heart_svgrepo_com.xml" value="0.21770833333333334" />
+        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/ic_launcher_background.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/ic_search.xml" value="0.24444444444444444" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/imdb_layout.xml" value="0.3828125" />
+        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/recycler_search_layout.xml" value="0.19635416666666666" />
+        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/scroll_layout.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/search_icon.xml" value="0.22592592592592592" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/drawable/search_layout.xml" value="0.16018518518518518" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/font/font_resource.xml" value="0.33796296296296297" />
@@ -15,7 +21,7 @@
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/fragment_bookmark.xml" value="0.19947916666666668" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/fragment_home.xml" value="0.19114583333333332" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/fragment_movie.xml" value="0.18" />
-        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/fragment_movie_detail.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/fragment_movie_detail.xml" value="0.16" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/fragment_search.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/movie_slider.xml" value="0.17806484295845998" />
         <entry key="..\:/Users/kageyama/AndroidStudioProjects/MoviesInShorts/app/src/main/res/layout/recycler_container.xml" value="0.17552083333333332" />

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="4dp"
+    android:paddingTop="4dp"
+    android:layout_marginTop="6dp"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="8dp"
+    android:background="@drawable/recycler_search_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.makeramen.roundedimageview.RoundedImageView
@@ -26,7 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_dummy"
-            style="@style/search_heading"/>
+            android:textColor="#36669A"
+            style="@style/headingDetail"/>
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,25 +39,30 @@
             >
             <TextView
                 android:id="@+id/search_rating"
-                style="@style/other_data"
+                style="@style/other_detail_data"
+                android:textColor="#36669A"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="|  9.8"
                 />
             <TextView
                 android:id="@+id/search_language"
-                style="@style/other_data"
+                style="@style/other_detail_data"
                 android:layout_marginStart="4dp"
+                android:textColor="#36669A"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="en"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
         <TextView
-            style="@style/other_data"
+            android:id="@+id/description"
+            style="@style/other_detail_data"
+            android:textColor="#36669A"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Thriller, Romantic, Comedy"
+            android:maxLines="2"
+            android:ellipsize="end"
             />
     </androidx.appcompat.widget.LinearLayoutCompat>
 

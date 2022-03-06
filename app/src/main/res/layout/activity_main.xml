@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingEnd="40dp"
+            android:paddingEnd="26dp"
             android:layout_gravity="end"
             android:layout_marginTop="20dp">
             <ImageButton
@@ -25,7 +25,6 @@
                 android:background="@color/transparent"
                 app:srcCompat="@drawable/ic_search"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
-
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"

@@ -84,16 +84,10 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void setData() {
-//        Blurry.with(requireContext())
-//                .radius(50)
-//                .sampling(10)
-//                .color(Color.argb(80, 255, 255, 0))
-//                .async()
-//                .onto(fragmentMovieDetailBinding.titleContainer);
-
         fragmentMovieDetailBinding.title.setText(movie.getTitle());
         fragmentMovieDetailBinding.language.setText(movie.getOriginal_language());
         fragmentMovieDetailBinding.rating.setText("  |  "+ movie.getVote_average());
+        fragmentMovieDetailBinding.description.setText(movie.getOverview());
         configureBookmarkImage(movie.isBookmark());
 
         fragmentMovieDetailBinding.mainContainer.setVisibility(View.VISIBLE);

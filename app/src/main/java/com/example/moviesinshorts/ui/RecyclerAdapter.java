@@ -50,6 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                 .load("https://image.tmdb.org/t/p/w500/"+movieModels.get(position).getPoster_path())
                 .into((holder).imageView);
         (holder).title.setText(movieModels.get(position).getTitle());
+        (holder).detail.setText(movieModels.get(position).getOverview());
         holder.language.setText(movieModels.get(position).getOriginal_language());
         holder.rating.setText(String.valueOf(movieModels.get(position).getVote_average()));
 
@@ -69,7 +70,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public RoundedImageView imageView;
-        public TextView title, rating, language, genre;
+        public TextView title, rating, language, detail;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,6 +78,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
             rating = itemView.findViewById(R.id.search_rating);
             language = itemView.findViewById(R.id.search_language);
             imageView = itemView.findViewById(R.id.search_image);
+            detail = itemView.findViewById(R.id.description);
             itemView.setOnClickListener(this);
         }
 
