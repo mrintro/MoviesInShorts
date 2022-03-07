@@ -1,5 +1,7 @@
 package com.example.moviesinshorts.network;
 
+import com.example.moviesinshorts.utils.Credentials;
+
 import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
@@ -10,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroInstance {
 
-    public static final String BASE_URL = "https://api.themoviedb.org/3/";
+    public static final String BASE_URL = Credentials.BASE_URL;
 
     public static Retrofit retrofit;
 
@@ -37,9 +39,6 @@ public class RetroInstance {
         return getRetroFitClient().create(api);
     }
 
-    public static NowPlayingApi getNowPlayingApi(){
-        return getRetroFitClient().create(NowPlayingApi.class);
-    }
 
 
 }

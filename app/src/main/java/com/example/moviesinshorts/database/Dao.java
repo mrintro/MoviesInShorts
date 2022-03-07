@@ -1,28 +1,18 @@
 package com.example.moviesinshorts.database;
 
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import androidx.room.Update;
 
-import com.example.moviesinshorts.database.tables.Movie;
-import com.example.moviesinshorts.database.tables.NowPlayingMovie;
-import com.example.moviesinshorts.database.tables.TrendingMovie;
 import com.example.moviesinshorts.model.MovieModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 @androidx.room.Dao
 public abstract class Dao {
@@ -54,9 +44,7 @@ public abstract class Dao {
     @Transaction
     public void upsertTrending(List<MovieModel> movieModelList){
         List<Long> insertResults = addMultipleMovie(movieModelList);
-        Log.d("Receiving data here", "update call 1");
         for(int i=0;i<movieModelList.size();i++){
-            Log.d("Receiving data here", "update call");
             if(insertResults.get(i)==-1) updateTrending(movieModelList.get(i).getId(), true);
         }
     }

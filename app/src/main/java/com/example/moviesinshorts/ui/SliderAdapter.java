@@ -4,34 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.Image;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentMovieBinding;
-import com.example.moviesinshorts.fragments.MovieDetailFragment;
 import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.repository.MovieListRepository;
-import com.example.moviesinshorts.utils.NetworkHelper;
 import com.example.moviesinshorts.utils.OnBookmarkClickListener;
 import com.example.moviesinshorts.utils.OnMovieOnClick;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder> {
@@ -52,7 +42,6 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         @Override
         public void onBookmarkClickListener(View view, int position) {
             boolean currStatus = sharedPreferences.getBoolean(String.valueOf(movieModels.get(position).getId()),false);
-            Log.d("Check", "Bookmark Clicked"+currStatus);
             editor.putBoolean(String.valueOf(movieModels.get(position).getId()), !currStatus);
             editor.commit();
             movieListViewModel.bookMarkMovie(movieModels.get(position).getId(), !currStatus);
@@ -65,10 +54,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     }
 
     public void setMovieModels(List<MovieModel> movieModels) {
-        Log.d("Setter called","checking setter");
 
         if(this.movieModels==null) {
-            Log.d("Checking data set change","true");
             this.movieModels = movieModels;
             notifyDataSetChanged();
         }
@@ -80,11 +67,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     private void setSmartData(List<MovieModel> movieModels) {
         for(int i=0;i<this.movieModels.size();i++){
             if(this.movieModels.get(i).getId()!=movieModels.get(i).getId()){
-                Log.d("Checking data set change","true");
                 notifyDataSetChanged();
             }else{
                 if(this.movieModels.get(i).isBookmark()!=movieModels.get(i).isBookmark()){
-                    Log.d("Checking item set change","true");
                     this.movieModels.set(i, movieModels.get(i));
                     notifyItemChanged(i);
                 }
@@ -120,7 +105,6 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        Log.d("Checking on bind view holder", String.valueOf(position));
 
             Glide.with(holder.itemView.getContext())
                     .load("https://image.tmdb.org/t/p/w500/" + movieModels.get(position).getPoster_path())
@@ -162,7 +146,6 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
         @Override
         public void onClick(View v) {
-            Log.d("Check ids", String.valueOf(v.getId())+" " +R.id.imageSlide);
             if(v.getId() == R.id.imageSlide) {
                 onMovieOnClick.onMovieOnClick(v, getBindingAdapterPosition());
             } else{

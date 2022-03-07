@@ -12,14 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.moviesinshorts.R;
 import com.example.moviesinshorts.databinding.FragmentHomeBinding;
-import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,22 +39,16 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         fragmentManager = getActivity().getSupportFragmentManager();
     }
-    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentHomeBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         View view = fragmentHomeBinding.getRoot();
-
         setUpCategoryButton();
         initInstances();
         initMovieFragment();
-        
         return view;
-
     }
-
-
 
     private void initMovieFragment() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -70,9 +62,7 @@ public class HomeFragment extends Fragment {
 
     private void initInstances() {
             nowPlayingInstance = new MovieFragment(Constants.NOW_PLAYING_FRAGMENT);
-            Log.d(nowPlayingInstance.getFragmentName(), "checking");
             trendingInstance = new MovieFragment(Constants.TRENDING_FRAGMENT);
-            Log.d(nowPlayingInstance.getFragmentName(), "checking");
 
     }
 
@@ -87,7 +77,6 @@ public class HomeFragment extends Fragment {
                     fragmentHomeBinding.nowPlayingButton.setTextAppearance(R.style.buttonInactiveTextStyle);
                     fragmentHomeBinding.trendingButton.setText(R.string.active_trending);
                     fragmentHomeBinding.nowPlayingButton.setText(R.string.now_playing);
-
                     fragmentHomeBinding.nowPlayingMovieFragment.setVisibility(View.INVISIBLE);
                     fragmentHomeBinding.trendingMovieFragment.setVisibility(View.VISIBLE);
                     currentFragment = Constants.TRENDING_FRAGMENT;
@@ -103,14 +92,12 @@ public class HomeFragment extends Fragment {
                     fragmentHomeBinding.trendingButton.setTextAppearance(R.style.buttonInactiveTextStyle);
                     fragmentHomeBinding.nowPlayingButton.setText(active_now_playing);
                     fragmentHomeBinding.trendingButton.setText(R.string.trending);
-
                     fragmentHomeBinding.trendingMovieFragment.setVisibility(View.INVISIBLE);
                     fragmentHomeBinding.nowPlayingMovieFragment.setVisibility(View.VISIBLE);
                     currentFragment = Constants.NOW_PLAYING_FRAGMENT;
                 }
             }
         });
-
     }
 
 }

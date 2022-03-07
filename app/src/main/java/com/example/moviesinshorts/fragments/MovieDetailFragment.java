@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +19,6 @@ import com.example.moviesinshorts.databinding.FragmentMovieDetailBinding;
 import com.example.moviesinshorts.model.MovieModel;
 import com.example.moviesinshorts.viewmodel.MovieListViewModel;
 import com.example.moviesinshorts.viewmodel.MyViewModelFactory;
-
-import java.util.List;
-
-import jp.wasabeef.blurry.Blurry;
 
 public class MovieDetailFragment extends Fragment {
 
@@ -64,13 +59,10 @@ public class MovieDetailFragment extends Fragment {
 
     private void setBookmarkButton() {
 
-        fragmentMovieDetailBinding.bookmarkImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                movie.setBookmark(!movie.isBookmark());
-                configureBookmarkImage(movie.isBookmark());
-                movieListViewModel.bookMarkMovie(movie);
-            }
+        fragmentMovieDetailBinding.bookmarkImage.setOnClickListener(v -> {
+            movie.setBookmark(!movie.isBookmark());
+            configureBookmarkImage(movie.isBookmark());
+            movieListViewModel.bookMarkMovie(movie);
         });
 
     }

@@ -34,7 +34,7 @@ public class MovieListRepository {
     private TrendingApi trendingApi;
     private SearchQueryApi searchQueryApi;
     private final Application application;
-    private CompositeDisposable disposable = new CompositeDisposable();
+    private final CompositeDisposable disposable = new CompositeDisposable();
     private static Database database;
 
     // All Live Data Below
@@ -94,7 +94,6 @@ public class MovieListRepository {
                             return movieListResponse.getMovieList();
                         }
                     }).doOnNext(movieModelList -> {
-                Log.d("Receiving data here", "update call 3");
                 getDatabaseInstance(application).dao().upsertTrending(movieModelList);
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -130,7 +129,6 @@ public class MovieListRepository {
                             return movieListResponse.getMovieList();
                         }
                     }).doOnNext(movieModelList -> {
-                Log.d("Receiving data here", "update call 3");
                 getDatabaseInstance(application).dao().upsertNowPlaying(movieModelList);
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -158,7 +156,6 @@ public class MovieListRepository {
     }
 
     private void observeDataFromDB(String fragmentName) {
-        Log.d("Getting Observe from data", "Funtion called");
         Observable<List<MovieModel>> movieModelFromDBObservable;
         if(fragmentName == Constants.TRENDING_FRAGMENT) movieModelFromDBObservable = getDatabaseInstance(application).dao().getAllTrendingMovies();
         else movieModelFromDBObservable = getDatabaseInstance(application).dao().getAllNowPlayingMovies();
@@ -170,18 +167,17 @@ public class MovieListRepository {
                            public void onNext(@NonNull List<MovieModel> response) {
                                 if(fragmentName == Constants.TRENDING_FRAGMENT) trendingMovieList.postValue(response);
                                 else nowPlayingMovieList.postValue(response);
-                               Log.d("Getting Response from db", "response size = " + response.size());
                                response.forEach(res -> Log.d("Getting Response : ", "Movie : " + res.getTitle() + " " + res.isBookmark() + " " + res.isTrending() + " " + res.isNowPlaying()));
 
                            }
                            @Override
                            public void onError(@NonNull Throwable e) {
-                                Log.d("Getting Response Error from DB", "response size = " + e.toString());
+                                Log.d("Getting Response Error from DB", "response = " + e.toString());
                            }
 
                            @Override
                            public void onComplete() {
-                               Log.d("Getting Response Message from DB", "on Complete");
+                               Log.d("Getting Response on complete from DB ", "on Complete");
                            }
                        }
             );

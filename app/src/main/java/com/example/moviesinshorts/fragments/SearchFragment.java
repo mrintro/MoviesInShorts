@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +88,6 @@ public class SearchFragment extends Fragment {
 
 
     private void initFocus() {
-        Log.d("Focus Check","checking textview focus");
         fragmentSearchBinding.searchField.requestFocus();
         InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(fragmentSearchBinding.searchField.getId(), InputMethodManager.SHOW_IMPLICIT);
@@ -131,7 +129,6 @@ public class SearchFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        Log.d("Search for string ", "After Text Change called " + s.toString() );
                         emitter.onNext(fragmentSearchBinding.searchField.getText().toString());
                     }
                 })
@@ -149,11 +146,8 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onNext(@NonNull String s) {
-                Log.d("Search for String :", s);
-                movieListViewModel.getSearchMovie(fragmentSearchBinding.searchField.getText().toString()).observe(getViewLifecycleOwner(), movieModels -> {
-                    Log.d("New data here", "check data");
-                    recyclerAdapter.setMovieModels(movieModels);
-                });
+                movieListViewModel.getSearchMovie(fragmentSearchBinding.searchField.getText().toString()).observe(getViewLifecycleOwner(),
+                        movieModels -> recyclerAdapter.setMovieModels(movieModels));
             }
 
             @Override
