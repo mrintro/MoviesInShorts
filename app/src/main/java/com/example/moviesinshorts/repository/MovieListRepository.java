@@ -82,7 +82,7 @@ public class MovieListRepository {
         this.application = application;
     }
 
-
+//    COMMENT
     public void getTrendingMovie() {
         if(NetworkHelper.checkNetwork(application)) {
             getTrendingApi().getMovieList()
